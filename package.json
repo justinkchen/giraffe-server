@@ -1,0 +1,13 @@
+{
+  "name":"giraffe_scraper",
+  "version":"0.0.1",
+  "node": "0.6.19",
+  "engines":{
+    "node":">= 0.6.19"
+  },
+  "dependencies":{
+    "express":">=2.5.8",
+    "mysql": "2.0.0-alpha7",
+    "forever": "0.9.2"
+  }
+}

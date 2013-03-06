@@ -1,5 +1,5 @@
 {
-  "name":"giraffe_scraper",
+  "name":"giraffe_server",
   "version":"0.0.1",
   "node": "0.6.19",
   "engines":{

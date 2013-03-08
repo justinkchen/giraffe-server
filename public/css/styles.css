@@ -1,9 +1,16 @@
 * { margin: 0; padding: 0; border: 0; }
 
+html {
+	height: 100%;
+}
+
 body {
 	background: url('../assets/grey.png') #f2f2f2;
 	color: #666;
 	font: 14px/18px 'Lato', Arial, sans-serif;
+	padding: 0;
+	margin: 0;
+	height: 100%;
 }
 
 header {
@@ -44,8 +51,9 @@ h1 {
 }
 
 #map {
-	width: 750px;
-	height: 420px;
+	/*width: 750px;
+	height: 420px;*/
+	height: 100%;
 	background: transparent;
 }
 

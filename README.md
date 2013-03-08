@@ -1,7 +1,7 @@
 unsamsung-server
 ================
 
-Unsamsung Heros Server
+Unsamsung Heroes Server
 ================
 
 Setup instructions:

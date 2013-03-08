@@ -29,13 +29,15 @@ h1 {
 }
 
 .wrapper {
-	width: 770px;
-	margin: 50px auto;
+	/*width: 770px;
+	margin: 50px auto;*/
+	height: 100%;
 }
 
 .app {
-	width: 750px;
-	padding: 10px;
+	/*width: 750px;
+	padding: 10px;*/
+	height: 100%;
 	background: rgba(230, 230, 230, 0.45);
 	text-align: center;
 	color: #999;
@@ -54,6 +56,7 @@ h1 {
 	/*width: 750px;
 	height: 420px;*/
 	height: 100%;
+	width: 100%;
 	background: transparent;
 }
 

@@ -32,7 +32,7 @@ io.sockets.on('connection', function (socket) {
 });
 
 app.get('/', function(req, res) {
-    connection.query('SELECT * FROM posts', function(err, results) {
+    connection.query('SELECT * FROM posts;', function(err, results) {
 	res.send(results);
     });
 });
@@ -45,9 +45,9 @@ app.get('/hello', function(req, res) {
 app.post('/addgraffiti', function(req, res) {
     if(req.body){
         res.send(req.body);
-        //connection.query('INSERT INTO posts (message, latitude, longitude, date_created, user_id) values (?,?,?,NOW(),?)',req.body.message, req.body.latitude, req.body.longitude, req.body.user.id, function(err, results) {
-        //    res.send(results);
-        //});
+        connection.query('INSERT INTO posts (message, latitude, longitude, radius, user_id) values (?,?,?,?,?);',[req.body.message, req.body.latitude, req.body.longitude, req.body.radius, req.body.userid], function(err, results) {
+            res.send(results);
+        });
     }else{
         res.send("No POST data read");
     }

@@ -9,18 +9,18 @@ $(function() {
  
     var sentData = {}
  
-    var connects = {};
+    var graffiti = {};
     var markers = {};
     var active = false;
  
     socket.on("load:coords", function(data) {
-        // remember users id to show marker only once
-        if (!(data.id in connects)) {
+        // remember graffiti to show marker only once
+        if (!(data.id in graffiti)) {
             setMarker(data);
         }
  
-        connects[data.id] = data;
-        connects[data.id].updated = $.now(); // shorthand for (new Date).getTime()
+        graffiti[data.id] = data;
+        graffiti[data.id].updated = $.now(); // shorthand for (new Date).getTime()
     });
  
     // check whether browser supports geolocation api
@@ -29,16 +29,11 @@ $(function() {
     } else {
         $(".map").text("Your browser is out of fashion, there\'s no geolocation!");
     }
- 
+ /*
     function positionSuccess(position) {
         var lat = position.coords.latitude;
         var lng = position.coords.longitude;
         var acr = position.coords.accuracy;
- 
-        // mark user's position
-        var userMarker = L.marker([lat, lng], {
-            icon: redIcon
-        });
  
 
         // send coords on when user is active
@@ -57,11 +52,8 @@ $(function() {
             socket.emit("send:coords", sentData);
         });
     }
- 
-    doc.bind("mouseup mouseleave", function() {
-        active = false;
-    });
- 
+ */
+
     // handle geolocation api errors
     function positionError(error) {
         var errors = {

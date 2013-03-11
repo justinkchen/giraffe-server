@@ -4,6 +4,7 @@ CREATE TABLE `posts` (
 `image_url`	VARCHAR(100) DEFAULT NULL,
 `latitude` DECIMAL(10,7),
 `longitude`	DECIMAL(10,7),
+`radius`	DOUBLE(12,7),
 `direction_x`	DOUBLE(16,7),
 `direction_y`	DOUBLE(16,7),
 `direction_z`	DOUBLE(16,7),
@@ -30,6 +31,6 @@ PRIMARY KEY (id)
 );
 
 INSERT INTO `users` (full_name, username, email, date_joined) values('Justin Chen', 'justinkchen', 'justinkchen@stanford.edu', '2013-03-10 13:00:00');
-INSERT INTO `posts` (message, latitude, longitude, date_created, user_id) values ('FML missed the midterm today', '37.1253452', '127.5343216','2013-03-10 13:00:00', '1');
-INSERT INTO `posts` (message, latitude, longitude, date_created, user_id) values ('This bathroom stall is awesome', '37.1253452', '127.5343216','2013-03-10 13:00:00', '1');
-INSERT INTO `posts` (message, latitude, longitude, date_created, user_id) values ('So lonely...', '37.1253452', '127.5343216','2013-03-10 13:00:00', '1');
+INSERT INTO `posts` (message, latitude, longitude, radius, date_created, user_id) values ('FML missed the midterm today', '37.1253452', '127.5343216', '10.523','2013-03-10 13:00:00', '1');
+INSERT INTO `posts` (message, latitude, longitude, radius, date_created, user_id) values ('This bathroom stall is awesome', '37.1253452', '127.5343216','50.25','2013-03-10 13:00:00', '1');
+INSERT INTO `posts` (message, latitude, longitude, radius, date_created, user_id) values ('So lonely...', '37.1253452', '127.5343216','100.0','2013-03-10 13:00:00', '1');

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Graffiti Map</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta charset="utf-8">
+
+    <link href="/maps/documentation/javascript/examples/default.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/styles.css">
+    <script>
+      function initialize() {
+        var myLatlng = new google.maps.LatLng(-25.363882,131.044922);
+        var mapOptions = {
+          zoom: 8,
+          center: myLatlng,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+
+        var map = new google.maps.Map(document.getElementById('map_canvas'),
+            mapOptions);
+
+        var marker = new google.maps.Marker({
+            position: myLatlng,
+            map: map,
+            title: 'Hello World!'
+        });
+      }
+
+      function loadScript() {
+        var script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&' +
+            'callback=initialize';
+        document.body.appendChild(script);
+      }
+
+      window.onload = loadScript;
+    </script>
+  </head>
+  <body>
+    <div id="infobox" class="infobox"></div>
+    <div id="map_canvas"></div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="./js/graffitiapp.js"></script>
+  </body>
+
+</html>

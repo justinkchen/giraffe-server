@@ -26,7 +26,6 @@ io.sockets.on('connection', function (socket) {
   connection.query('SELECT * FROM posts;', function(err, results) {
       socket.emit('load:coords', results);
   });
-
 });
 
 app.get('/', function(req, res) {

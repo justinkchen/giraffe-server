@@ -43,7 +43,7 @@ app.get('/hello', function(req, res) {
 });
 
 app.post('/addgraffiti', function(req, res) {
-    if(req.body){
+    if(req.body.message){
         res.send(req.body);
         connection.query('INSERT INTO posts (message, latitude, longitude, radius, user_id) values (?,?,?,?,?);',[req.body.message, req.body.latitude, req.body.longitude, req.body.radius, req.body.userid], function(err, results) {
             res.send(results);

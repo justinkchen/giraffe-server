@@ -2,8 +2,7 @@ $(function() {
     // generate unique user id
     var userId = Math.random().toString(16).substring(2,15);
     var socket = io.connect("/");
-    var map;
- 
+    var pointarray, heatmap, map;;
     var info = $("#infobox");
     var doc = $(document);
  
@@ -12,6 +11,19 @@ $(function() {
     var graffiti = {};
     var markers = {};
     var active = false;
+
+    var latitude = parseFloat(getUrlVars()["latitude"]);
+    var longitude = parseFloat(getUrlVars()["longitude"]);
+    var userid = parseFloat(getUrlVars()["userid"]);
+    if(!latitude){
+        latitude = 0;
+    }
+    if(!longitude){
+        longitude = 0;
+    }
+    if(!userid){
+        userid = 0;
+    }
  
     socket.on("load:coords", function(data) {
         // remember graffiti to show marker only once
@@ -27,7 +39,7 @@ $(function() {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(positionSuccess, positionError, { enableHighAccuracy: true });
     } else {
-        $(".map").text("Your browser is out of fashion, there\'s no geolocation!");
+        $(".map_canvas").text("Your browser is out of fashion, there\'s no geolocation!");
     }
  /*
     function positionSuccess(position) {

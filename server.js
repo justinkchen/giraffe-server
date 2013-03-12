@@ -22,19 +22,17 @@ var connection = mysql.createConnection({
 // listen for incoming connections from client
 io.sockets.on('connection', function (socket) {
  
-  // start listening for coords
-  socket.on('send:coords', function (data) {
- 
-    // broadcast your coordinates to everyone except you
-    socket.broadcast.emit('load:coords', data);
+  // start sending out coords
+  connection.query('SELECT * FROM posts;', function(err, results) {
+      socket.emit('load:coords', results);
   });
 
 });
 
 app.get('/', function(req, res) {
-    connection.query('SELECT * FROM posts;', function(err, results) {
-	res.send(results);
-    });
+  connection.query('SELECT * FROM posts;', function(err, results) {
+    res.send(results);
+  });
 });
 
 

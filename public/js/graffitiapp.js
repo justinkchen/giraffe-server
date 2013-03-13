@@ -22,13 +22,19 @@ $(function() {
         heatmap = new google.maps.visualization.HeatmapLayer({
             data: pointArray
         });
-
+        heatmap.setOptions({radius: 50});
+        heatmap.setOptions({dissipating: true});
         heatmap.setMap(map);
     });
 
     function initialize() {
         latitude = parseFloat(getUrlVars()["latitude"]);
         longitude = parseFloat(getUrlVars()["longitude"]);
+
+	// Demo purposes only
+        latitude = 37.426854;
+        longitude = -122.171853;
+	//
         userid = parseFloat(getUrlVars()["userid"]);
 	 // TODO: socket.emit the userid, latitude, and longitude and have server only broadcast a userid tagged list of locations so each user doesn't get the whole database
         if(!latitude){
@@ -42,7 +48,7 @@ $(function() {
         }
         var myLatlng = new google.maps.LatLng(latitude,longitude);
         var mapOptions = {
-            zoom: 14,
+            zoom: 17,
             center: myLatlng,
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };

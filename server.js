@@ -24,13 +24,14 @@ io.sockets.on('connection', function (socket) {
  
   // start sending out coords
   connection.query('SELECT * FROM posts;', function(err, results) {
-      socket.emit('load:coords', results);
+      socket.emit('load:coords', results.reverse());
   });
+
 });
 
 app.get('/', function(req, res) {
   connection.query('SELECT * FROM posts;', function(err, results) {
-    res.send(results);
+    res.send(results.reverse());
   });
 });
 
@@ -41,12 +42,19 @@ app.get('/hello', function(req, res) {
 
 app.post('/addgraffiti', function(req, res) {
     if(req.body.message){
-        res.send(req.body);
         connection.query('INSERT INTO posts (message, latitude, longitude, radius, user_id) values (?,?,?,?,?);',[req.body.message, req.body.latitude, req.body.longitude, req.body.radius, req.body.userid], function(err, results) {
             res.send(results);
         });
     }else{
         res.send("No POST data read");
+    }
+});
+
+app.post('/demoresponse', function(req, res) {
+    if(req.body.message){
+        connection.query('INSERT INTO posts (message, latitude, longitude, radius, user_id) values (?,?,?,?,?);',[req.body.message, req.body.latitude, req.body.longitude, req.body.radius, req.body.userid], function(err, results) {
+            res.redirect("/demolist.html");
+        });
     }
 });
 

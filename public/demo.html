@@ -13,18 +13,19 @@
 <!-- Start of first page -->
 <div data-role="page" id="foo">
 
-	<div data-role="header">
-		<h1>Post Graffiti</h1>
+	<div data-role="header" data-theme="c">
+		<center><img width="300px" src="http://i.imgur.com/RAzCzSO.gif"></img></center>
 	</div><!-- /header -->
 
 	<div data-role="content">
-		<form action="#bar" method="post">
+		<form action="demoresponse" method="post">
 		<div data-role="fieldcontain">
 			<label for="message">Message:</label>
-			<input type="text" name="message" id="message" />
-		</div>
-
-		<input type="hidden" name="latitude" value="37.426854">
+			<textarea cols="40" rows="60" style="height: 150px;" name="message" id="message"></textarea>		</div>
+			<label for="radius">Range of post (in meters):</label>
+			<input type="range" name="radius" id="radius" value="25" min="5" max="325" step="10" data-highlight="true">
+			<center><img src="http://maps.google.com/maps/api/staticmap?size=300x150&markers=color:blue%7Clabel:S%7C37.426854,-122.171853&path=fillcolor:0x00FF00|weight:1|color:0xFFFFFF|enc:k_mcFbuthVDe@FUJQLMNK\G\DNHNLJNHRFl@Ed@GRKPMNOH]F]EQGMMKQISGk@&sensor=true" border="0"/></center>		
+			<input type="hidden" name="latitude" value="37.426854">
 		<input type="hidden" name="longitude" value="-122.171853">
 		<input type="hidden" name="userid" value="2">
 		<input type="submit" value="Add Graffiti"></input>
@@ -32,24 +33,7 @@
 	</div><!-- /content -->
 
 	<div data-role="footer">
-		<h4>Page Footer</h4>
-	</div><!-- /footer -->
-</div><!-- /page -->
-
-<!-- Start of second page -->
-<div data-role="page" id="bar">
-
-	<div data-role="header">
-		<h1>Success!</h1>
-	</div><!-- /header -->
-
-	<div data-role="content">
-		<p>Successful post!</p>
-		<p>Go back to <a href="#bar">post more graffiti</a></p>
-	</div><!-- /content -->
-
-	<div data-role="footer">
-		<h4>Page Footer</h4>
+		<h4>Thanks for participating!</h4>
 	</div><!-- /footer -->
 </div><!-- /page -->
 </body>

@@ -33,9 +33,9 @@ PRIMARY KEY (id)
 INSERT INTO `users` (full_name, username, email) values('Justin Chen', 'justinkchen', 'justinkchen@stanford.edu');
 INSERT INTO `users` (full_name, username, email) values('CS210 Student', 'cs210student', 'cs210@stanford.edu');
 
-INSERT INTO `posts` (message, latitude, longitude, radius, user_id) values ('I’m alive! survived that midterm!', '37.427791', '-122.169675','25','2');
+INSERT INTO `posts` (message, latitude, longitude, radius, user_id) values ("I'm alive! survived that midterm!", '37.427791', '-122.169675','25','2');
 INSERT INTO `posts` (message, latitude, longitude, radius, user_id) values ('This class in bldg 110 is so boring...anyone wanna chat? #bldg110', '37.428004', '-122.170635','25','2');
-INSERT INTO `posts` (message, latitude, longitude, radius, user_id) values ('Hey I wanna chat! what’s up? #bldg110', '37.428004', '-122.170635','25','2');
+INSERT INTO `posts` (message, latitude, longitude, radius, user_id) values ("Hey I wanna chat! what's up? #bldg110", '37.428004', '-122.170635','25','2');
 INSERT INTO `posts` (message, latitude, longitude, radius, user_id) values ('The Stanford Memorial church is a must-see on your trip to Stanford.  Absolutely inspiring when you go in', '37.427174', '-122.170377','25','2');
 INSERT INTO `posts` (message, latitude, longitude, radius, user_id) values ('First time using this application...pretty cool!!', '37.426607', '-122.16924','25','2');
 INSERT INTO `posts` (message, latitude, longitude, radius, user_id) values ('JC wuz here #mensbathroom', '37.426535', '-122.169701','25','2');
@@ -43,6 +43,6 @@ INSERT INTO `posts` (message, latitude, longitude, radius, user_id) values ('Go 
 INSERT INTO `posts` (message, latitude, longitude, radius, user_id) values ('FML just tripped and fell in front of a group of tourists...', '37.426373', '-122.17057','25','2');
 INSERT INTO `posts` (message, latitude, longitude, radius, user_id) values ('Just saw the Pope inside the Round Room of the Memorial Church!', '37.426565', '-122.170817','25','2');
 INSERT INTO `posts` (message, latitude, longitude, radius, user_id) values ('This path through the main quad is actually really awesome...', '37.426816', '-122.171144','25','2');
-INSERT INTO `posts` (message, latitude, longitude, radius, user_id) values ('Almost at cs210 class!! Can’t wait!', '37.427008', '-122.171499', '25','2');
+INSERT INTO `posts` (message, latitude, longitude, radius, user_id) values ("Almost at cs210 class!! Can't wait!", '37.427008', '-122.171499', '25','2');
 INSERT INTO `posts` (message, latitude, longitude, radius, user_id) values ('In cs210, about to present software demo...hope everything works out!', '37.426854', '-122.171853', '25','2');
 

@@ -58,5 +58,13 @@ app.post('/demoresponse', function(req, res) {
     }
 });
 
+app.post('/login', function(req, res) {
+    
+});
+
+app.post('/signup', function(req, res) {
+    
+});
+
 server.listen(PORT_NO);
 console.log('Listening on port ' + PORT_NO);

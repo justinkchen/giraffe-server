@@ -2,7 +2,9 @@
 var express = require('express');
 var app = require('express')()
   , server = require('http').createServer(app)
-  , io = require('socket.io').listen(server);
+  , io = require('socket.io').listen(server)
+  , passport = require('passport')
+  , LocalStrategy = require('passport-local').Strategy;
 
 app.use(express.static(__dirname + '/public'));
 app.use(express.bodyParser());
@@ -19,6 +21,31 @@ var connection = mysql.createConnection({
     database : 'giraffe'
 });
  
+passport.use(new LocalStrategy({
+        usernameField: 'email',
+        passwordField: 'password-hash'
+    },
+    function(username, password, cb) {
+	connection.query('SELECT * FROM users WHERE email=? LIMIT 1',[req.body.email], function(err, results) {
+	    user = null;
+	    if (err) {
+		return cb(err);
+	    }
+	    if (!results) {
+		return done(null, false, { message: 'Incorrect username or password.' });
+	    } else {
+		user = results[0]
+	    }
+	    if (!user.password_hash != password) {
+		return done(null, false, { message: 'Incorrect username or password.' });
+	    }
+	    delete user.password_hash
+	    delete user.salt
+	    return done(null, user);
+	});
+    }
+));
+
 // listen for incoming connections from client
 io.sockets.on('connection', function (socket) {
  
@@ -58,8 +85,22 @@ app.post('/demoresponse', function(req, res) {
     }
 });
 
-app.post('/login', function(req, res) {
-    
+app.post('/login', function(req, res, next) {
+    passport.authenticate('local', function(err, user, info) {
+	if (err) {
+	    return next(err);
+	}
+	if (!user) {
+	    // print info.message
+	    return res.redirect('/login');
+	}
+	req.logIn(user, function(err) {
+	    if (err) {
+		return next(err);
+	    }
+	    return res.redirect('/users/' + user.username);
+	});
+    })(req, res, next);
 });
 
 app.post('/signup', function(req, res) {

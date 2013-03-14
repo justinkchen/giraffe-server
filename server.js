@@ -4,7 +4,8 @@ var app = require('express')()
   , server = require('http').createServer(app)
   , io = require('socket.io').listen(server)
   , passport = require('passport')
-  , LocalStrategy = require('passport-local').Strategy;
+  , LocalStrategy = require('passport-local').Strategy
+  , bcrypt = require('bcrypt');
 
 app.use(express.static(__dirname + '/public'));
 app.use(express.bodyParser());
@@ -21,10 +22,7 @@ var connection = mysql.createConnection({
     database : 'giraffe'
 });
  
-passport.use(new LocalStrategy({
-        usernameField: 'email',
-        passwordField: 'password-hash'
-    },
+passport.use(new LocalStrategy(
     function(username, password, cb) {
 	connection.query('SELECT * FROM users WHERE email=? LIMIT 1',[req.body.email], function(err, results) {
 	    user = null;
@@ -36,7 +34,7 @@ passport.use(new LocalStrategy({
 	    } else {
 		user = results[0]
 	    }
-	    if (!user.password_hash != password) {
+	    if (!bcrypt.compareSync(password, user.password_hash)) {
 		return done(null, false, { message: 'Incorrect username or password.' });
 	    }
 	    delete user.password_hash
@@ -104,7 +102,15 @@ app.post('/login', function(req, res, next) {
 });
 
 app.post('/signup', function(req, res) {
-    
+    if(req.body){
+	connection.query('INSERT INTO users (username, email, password_hash) VALUES (?,?,?);', [req.body.username, req.body.email, bcrypt.hashSync(req.body.password, saltRounds)], function(err, results) {
+	    // TODO: log user in
+	    res.send(results);
+	});
+    } else {
+	// TODO: proper response
+        res.send("No POST data read");
+    }
 });
 
 server.listen(PORT_NO);

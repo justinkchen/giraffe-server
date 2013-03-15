@@ -1,16 +1,31 @@
 /* Express server */
 var express = require('express');
-var app = require('express')()
-  , server = require('http').createServer(app)
-  , io = require('socket.io').listen(server)
-  , passport = require('passport')
-  , LocalStrategy = require('passport-local').Strategy
-  , bcrypt = require('bcrypt');
+var app = express();
+var http = require('http');
+var https = require('https');
+var fs = require('fs');
+var server = http.createServer(app);
+var io = require('socket.io').listen(server);
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+var bcrypt = require('bcrypt');
+var crypto = require('crypto');
 
-app.use(express.static(__dirname + '/public'));
-app.use(express.bodyParser());
+app.configure(function() {
+    app.use(express.static(__dirname + '/public'));
+    app.use(express.bodyParser());
+});
 
-var PORT_NO = 3000;
+/* Port numbers */
+var HTTP_PORT_NO = 3000; // cannot use 80
+var HTTPS_PORT_NO = 8000; // cannot use 443
+
+/* HTTPS options */
+var options = {
+    key: fs.readFileSync('key.pem'),
+    cert: fs.readFileSync('cert.pem')
+};
+
 
 /* Database */
 /* Connect to MySQL */
@@ -59,7 +74,6 @@ app.get('/', function(req, res) {
     res.send(results.reverse());
   });
 });
-
 
 app.get('/hello', function(req, res) {
     res.send('Hello World');
@@ -113,5 +127,7 @@ app.post('/signup', function(req, res) {
     }
 });
 
-server.listen(PORT_NO);
-console.log('Listening on port ' + PORT_NO);
+console.log('Listening to HTTP on port ' + HTTP_PORT_NO);
+server.listen(HTTP_PORT_NO);
+console.log('Listening to HTTPS on port ' + HTTPS_PORT_NO);
+https.createServer(options, app).listen(HTTPS_PORT_NO)

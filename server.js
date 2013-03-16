@@ -142,11 +142,12 @@ app.get('/home', function(req, res) {
     connection.query('SELECT * FROM posts;', function(err, results) {
         //res.send(results.reverse());
         //test post for local machine
-        var posts = {'posts' : results} 
-        res.render('index',posts);
+        var posts = {'posts' : results.reverse()}
+        res.render('index',posts); 
     });
   
 });
+
 
 
 

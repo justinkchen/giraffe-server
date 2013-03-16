@@ -13,6 +13,7 @@
     "node-static": "*",
     "passport": "0.1.16",
     "passport-local": "0.1.6",
-    "bcrypt": ">=0.7.5"
+    "bcrypt": ">=0.7.5",
+    "jade": ">=0.0.1"
   }
 }

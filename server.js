@@ -1,16 +1,33 @@
 /* Express server */
 var express = require('express');
-var app = require('express')()
-  , server = require('http').createServer(app)
-  , io = require('socket.io').listen(server)
-  , passport = require('passport')
-  , LocalStrategy = require('passport-local').Strategy
-  , bcrypt = require('bcrypt');
+var app = express();
+var http = require('http');
+var https = require('https');
+var fs = require('fs');
+var server = http.createServer(app);
+var io = require('socket.io').listen(server);
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+var bcrypt = require('bcrypt');
+var crypto = require('crypto');
 
-app.use(express.static(__dirname + '/public'));
-app.use(express.bodyParser());
+app.configure(function() {
+    app.use(express.static(__dirname + '/public'));
+    app.use(express.bodyParser());
+    app.set('views',__dirname + '/views');
+    app.set('view engine','jade');
+});
 
-var PORT_NO = 3000;
+/* Port numbers */
+var HTTP_PORT_NO = 3000; // cannot use 80
+var HTTPS_PORT_NO = 8000; // cannot use 443
+
+/* HTTPS options */
+var options = {
+    key: fs.readFileSync('key.pem'),
+    cert: fs.readFileSync('cert.pem')
+};
+
 
 /* Database */
 /* Connect to MySQL */
@@ -59,7 +76,6 @@ app.get('/', function(req, res) {
     res.send(results.reverse());
   });
 });
-
 
 app.get('/hello', function(req, res) {
     res.send('Hello World');
@@ -113,5 +129,146 @@ app.post('/signup', function(req, res) {
     }
 });
 
-server.listen(PORT_NO);
-console.log('Listening on port ' + PORT_NO);
+console.log('Listening to HTTP on port ' + HTTP_PORT_NO);
+server.listen(HTTP_PORT_NO);
+console.log('Listening to HTTPS on port ' + HTTPS_PORT_NO);
+https.createServer(options, app).listen(HTTPS_PORT_NO)
+
+
+
+
+
+
+app.get('/home', function(req, res) {
+    connection.query('SELECT * FROM posts;', function(err, results) {
+        //res.send(results.reverse());
+        //test post for local machine
+
+        var posts = {posts:[
+          {
+            "id": 35,
+            "message": "Penis",
+            "image_url": null,
+            "latitude": 37.426854,
+            "longitude": -122.171853,
+            "radius": 25,
+            "direction_x": 0,
+            "direction_y": 0,
+            "direction_z": 0,
+            "num_likes": 0,
+            "date_created": "2013-03-14T00:52:11.000Z",
+            "user_id": 2,
+            "num_flagged": 0
+          },
+          {
+            "id": 34,
+            "message": "Wow\r\n",
+            "image_url": null,
+            "latitude": 37.426854,
+            "longitude": -122.171853,
+            "radius": 25,
+            "direction_x": 0,
+            "direction_y": 0,
+            "direction_z": 0,
+            "num_likes": 0,
+            "date_created": "2013-03-14T00:51:56.000Z",
+            "user_id": 2,
+            "num_flagged": 0
+          },
+          {
+            "id": 33,
+            "message": "Is it possible for a presentation to be too good? ",
+            "image_url": null,
+            "latitude": 37.426854,
+            "longitude": -122.171853,
+            "radius": 165,
+            "direction_x": 0,
+            "direction_y": 0,
+            "direction_z": 0,
+            "num_likes": 0,
+            "date_created": "2013-03-14T00:51:39.000Z",
+            "user_id": 2,
+            "num_flagged": 0
+          },
+          {
+            "id": 32,
+            "message": "<script type='text/javascript'>alert('I want dinner')</script>",
+            "image_url": null,
+            "latitude": 37.426854,
+            "longitude": -122.171853,
+            "radius": 165,
+            "direction_x": 0,
+            "direction_y": 0,
+            "direction_z": 0,
+            "num_likes": 0,
+            "date_created": "2013-03-14T00:50:40.000Z",
+            "user_id": 2,
+            "num_flagged": 0
+          },
+          {
+            "id": 31,
+            "message": ":)))))))",
+            "image_url": null,
+            "latitude": 37.426854,
+            "longitude": -122.171853,
+            "radius": 25,
+            "direction_x": 0,
+            "direction_y": 0,
+            "direction_z": 0,
+            "num_likes": 0,
+            "date_created": "2013-03-14T00:50:31.000Z",
+            "user_id": 2,
+            "num_flagged": 0
+          },
+          {
+            "id": 30,
+            "message": "Cool demo!",
+            "image_url": null,
+            "latitude": 37.2537,
+            "longitude": 127.055,
+            "radius": 25,
+            "direction_x": 0,
+            "direction_y": 0,
+            "direction_z": 0,
+            "num_likes": 0,
+            "date_created": "2013-03-14T00:50:27.000Z",
+            "user_id": 1,
+            "num_flagged": 0
+          },
+          {
+            "id": 29,
+            "message": "Wow, my group was nowhere near this cool... ",
+            "image_url": null,
+            "latitude": 37.426854,
+            "longitude": -122.171853,
+            "radius": 305,
+            "direction_x": 0,
+            "direction_y": 0,
+            "direction_z": 0,
+            "num_likes": 0,
+            "date_created": "2013-03-14T00:50:01.000Z",
+            "user_id": 2,
+            "num_flagged": 0
+            }]};
+            res.render('index',posts);
+    });
+  
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

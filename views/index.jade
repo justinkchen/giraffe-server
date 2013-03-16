@@ -1,0 +1,29 @@
+!!!
+html
+	head
+	title Giraffe
+	link(rel='stylesheet', href='/css/bootstrap.css')
+	body
+		div.navbar
+			div.navbar-inner
+				a.brand(href='#') Giraffe
+				ul.nav
+					li.active
+						a(href='#') Home
+					li
+						a(href='#') Profile
+					li
+						a(href='#') Settings
+		div.container-fluid
+			div.span4
+				h3  Nearby Graffiti
+				table.table.table-bordered
+					for post in posts
+						tr
+							td
+								p #{post.id} #{post.radius} ft. radius
+								p #{post.message}
+
+
+
+

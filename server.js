@@ -142,11 +142,13 @@ app.get('/home', function(req, res) {
     connection.query('SELECT * FROM posts;', function(err, results) {
         //res.send(results.reverse());
         //test post for local machine
-        
-        res.render('index',results);
+        var posts = {'posts' : results.reverse()}
+        res.render('index',posts); 
     });
   
 });
 
 
+
+https.createserver(options, app).listen(https_port_no)
 

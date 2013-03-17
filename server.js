@@ -142,53 +142,8 @@ app.get('/home', function(req, res) {
     connection.query('SELECT * FROM posts;', function(err, results) {
         //res.send(results.reverse());
         //test post for local machine
-        // var posts = {'posts' : results.reverse()}
-        var posts = {'posts' : [
-          {
-            "id": 35,
-            "message": "Penis",
-            "image_url": null,
-            "latitude": 37.426854,
-            "longitude": -122.171853,
-            "radius": 25,
-            "direction_x": 0,
-            "direction_y": 0,
-            "direction_z": 0,
-            "num_likes": 0,
-            "date_created": "2013-03-14T00:52:11.000Z",
-            "user_id": 2,
-            "num_flagged": 0
-          },
-          {
-            "id": 34,
-            "message": "Wow\r\n",
-            "image_url": null,
-            "latitude": 37.426854,
-            "longitude": -122.171853,
-            "radius": 25,
-            "direction_x": 0,
-            "direction_y": 0,
-            "direction_z": 0,
-            "num_likes": 0,
-            "date_created": "2013-03-14T00:51:56.000Z",
-            "user_id": 2,
-            "num_flagged": 0
-          },
-          {
-            "id": 33,
-            "message": "Is it possible for a presentation to be too good? ",
-            "image_url": null,
-            "latitude": 37.426854,
-            "longitude": -122.171853,
-            "radius": 165,
-            "direction_x": 0,
-            "direction_y": 0,
-            "direction_z": 0,
-            "num_likes": 0,
-            "date_created": "2013-03-14T00:51:39.000Z",
-            "user_id": 2,
-            "num_flagged": 0
-        }]};
+        var posts = {'posts' : results.reverse()}
+        
 
         for (var i = 0; i < posts.posts.length; i++){
             var date = new Date(posts.posts[i].date_created);

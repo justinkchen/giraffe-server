@@ -6002,4 +6002,9 @@ td > .login-input{
   background: white;
 }
 
+#map-canvas {
+  padding-top: 30px;
+  width: 100%;
+  height: 700px;
+}
 

@@ -1,0 +1,5 @@
+#!/bin/bash
+ 
+#Set the git configs to be Elliott's settings
+git config --global user.name "Elliott Lui"
+git config --global user.email "elliott.lui@gmail.com"

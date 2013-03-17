@@ -1,0 +1,5 @@
+#!/bin/bash
+ 
+#Set the git configs to be Johan's settings
+git config --global user.name "Johan Lindell"
+git config --global user.email "johanlindell@stanford.edu"

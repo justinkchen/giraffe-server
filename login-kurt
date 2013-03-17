@@ -1,0 +1,5 @@
+#!/bin/bash
+ 
+#Set the git configs to be Kurt's settings
+git config --global user.name "Kurt Horimoto"
+git config --global user.email "kkhorimoto@gmail.com"

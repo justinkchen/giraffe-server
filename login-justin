@@ -1,0 +1,5 @@
+#!/bin/bash
+ 
+#Set the git configs to be Justin's settings
+git config --global user.name "Justin Chen"
+git config --global user.email "justinkchen@stanford.edu"

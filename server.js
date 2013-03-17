@@ -142,7 +142,7 @@ app.get('/home', function(req, res) {
         //res.send(results.reverse());
         //test post for local machine
         var posts = {'posts' : results.reverse()}
-     
+
         res.render('index',posts); 
     });
   

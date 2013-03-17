@@ -1,0 +1,5 @@
+#!/bin/bash
+ 
+#Set the git configs to be Bryan's settings
+git config --global user.name "Bryan Cheng"
+git config --global user.email "bbch@stanford.edu"

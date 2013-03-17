@@ -20,7 +20,7 @@ html
             a(href='#') Settings
     div.container-fluid
       div.row-fluid
-        div.span4
+        div#graffiti-list.span4
           h3  Nearby Graffiti
           table.table.table-bordered
             for post in posts
@@ -32,7 +32,6 @@ html
 
         div.span8
           //input(type='button', value='get location',onclick='getUserLocation()')
-          div(id='locationData')
           div(id='map-canvas')
 
 

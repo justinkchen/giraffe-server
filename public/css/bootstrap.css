@@ -6003,7 +6003,7 @@ td > .login-input{
 }
 
 #map-canvas {
-  padding-top: 30px;
+  margin-top: 20px;
   width: 100%;
   height: 700px;
 }

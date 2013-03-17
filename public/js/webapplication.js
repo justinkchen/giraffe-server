@@ -3,7 +3,7 @@ function getUserLocation() {
   if (navigator.geolocation)
     navigator.geolocation.getCurrentPosition(displayLocation, displayError);
   else
-    document.getElementById("locationData").innerHTML = "Sorry - your browser doesn't support geolocation!";
+    document.getElementById("map-canvas").innerHTML = "Sorry - your browser doesn't support geolocation!";
 }
 
 function initialize(position) {
@@ -18,12 +18,9 @@ function initialize(position) {
 function displayLocation(position) { 
   var initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
   // Location for Test purposes
-  // var initialLocation = new google.maps.LatLng(37.426854,-122.171853);
   //build text string including co-ordinate data passed in parameter
-  var displayText = "User latitude is " + position.coords.latitude + " and longitude is " + position.coords.longitude;
 
   //display the string for demonstration
-  document.getElementById("locationData").innerHTML = displayText;
   var mapOptions = {
       center: initialLocation,
       zoom: 18,
@@ -58,12 +55,15 @@ function pinMessages(map,initialLocation){
 
 function displayError(error) { 
   //get a reference to the HTML element for writing result
-  var locationElement = document.getElementById("locationData");
+  var locationElement = document.getElementById("map-canvas");
+
+  document.getElementById("graffiti-list").innerHTML = "<h3>Nearby Graffiti</h3>";
+
 
   //find out which error we have, output message accordingly
   switch(error.code) {
   case error.PERMISSION_DENIED:
-    locationElement.innerHTML = "Permission was denied";
+    locationElement.innerHTML = "Need to share location to access this page!";
     break;
   case error.POSITION_UNAVAILABLE:
     locationElement.innerHTML = "Location data not available";
@@ -77,4 +77,5 @@ function displayError(error) {
   default:
     locationElement.innerHTML = "Who knows what happened...";
     break;
-}}
+  }
+}

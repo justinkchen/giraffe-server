@@ -6008,3 +6008,21 @@ td > .login-input{
   height: 700px;
 }
 
+#post-button, #list-button {
+  margin-top: 12px;
+  margin-left: 17px;
+}
+
+#graffiti-form {
+  display: none;
+}
+
+#input-textarea {
+  width: 100%;
+  height: 50px;
+
+}
+
+#list-button {
+  display: none;
+}

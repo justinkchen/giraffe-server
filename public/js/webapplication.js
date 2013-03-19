@@ -36,6 +36,34 @@ function displayLocation(position) {
  
 }
 
+function postGraffiti(){
+  document.getElementById("page-header").innerHTML = "Post Graffiti";
+  var graffitiList = document.getElementById("graffiti-list");
+  var graffitiForm = document.getElementById("graffiti-form");
+  
+  graffitiList.style.display = "none";
+  graffitiForm.style.display = "inline";
+
+  document.getElementById("post-button").style.display="none";
+  document.getElementById("list-button").style.display="inline";
+  
+
+  // graffitiForm.style.visibility = "visible";
+
+}
+
+function listGraffiti(){
+  document.getElementById("page-header").innerHTML = "Nearby Graffiti";
+  var graffitiList = document.getElementById("graffiti-list");
+  var graffitiForm = document.getElementById("graffiti-form");
+  
+  graffitiList.style.display = "inline";
+  graffitiForm.style.display = "none";
+
+  document.getElementById("post-button").style.display="inline";
+  document.getElementById("list-button").style.display="none";
+}
+
 
 function pinMessages(map,initialLocation){
 

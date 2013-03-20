@@ -17,6 +17,8 @@ app.configure(function() {
     app.set('views',__dirname + '/views');
     app.set('view engine','jade');
 
+    app.use(passport.initialize());
+    app.use(passport.session());
 });
 
 /* Port numbers */
@@ -41,17 +43,18 @@ var connection = mysql.createConnection({
 });
  
 passport.use(new LocalStrategy(
-    function(username, password, cb) {
-	connection.query('SELECT * FROM users WHERE email=? LIMIT 1',[req.body.email], function(err, results) {
+    function(username, password, done) {
+	connection.query('SELECT * FROM users WHERE email=? LIMIT 1',[username], function(err, results) {
 	    user = null;
 	    if (err) {
-		return cb(err);
+		return done(err);
 	    }
-	    if (!results) {
+	    if (!results || results.length == 0) {
 		return done(null, false, { message: 'Incorrect username or password.' });
 	    } else {
 		user = results[0]
 	    }
+	    
 	    if (!bcrypt.compareSync(password, user.password_hash)) {
 		return done(null, false, { message: 'Incorrect username or password.' });
 	    }

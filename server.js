@@ -42,9 +42,12 @@ var connection = mysql.createConnection({
     database : 'giraffe'
 });
  
-passport.use(new LocalStrategy(
-    function(username, password, done) {
-	connection.query('SELECT * FROM users WHERE email=? LIMIT 1',[username], function(err, results) {
+passport.use(new LocalStrategy({
+        usernameField: 'usernameEmail',
+        passwordField: 'password',
+    },
+    function(usernameEmail, password, done) {
+	connection.query('SELECT * FROM users WHERE username=? OR email=? LIMIT 1',[usernameEmail, usernameEmail], function(err, results) {
 	    user = null;
 	    if (err) {
 		return done(err);
@@ -106,17 +109,21 @@ app.post('/demoresponse', function(req, res) {
 app.post('/login', function(req, res, next) {
     passport.authenticate('local', function(err, user, info) {
 	if (err) {
+	    // TODO: send err message
 	    return next(err);
 	}
 	if (!user) {
-	    // print info.message
+	    // TODO: send err message info
 	    return res.redirect('/login');
 	}
-	req.logIn(user, function(err) {
+	req.logIn(user, function(err) { // establish session??
 	    if (err) {
+		// TODO: send err message?
 		return next(err);
 	    }
-	    return res.redirect('/users/' + user.username);
+	    // TODO: return user in response
+	    res.send(user);
+	    //return res.redirect('/users/' + user.username);
 	});
     })(req, res, next);
 });

@@ -17,6 +17,9 @@ function initialize(position) {
 
 function displayLocation(position) { 
   var initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+
+  document.getElementById("lat-input").value = position.coords.latitude;
+  document.getElementById("long-input").value = position.coords.longitude;
   // Location for Test purposes
   //build text string including co-ordinate data passed in parameter
 
@@ -36,6 +39,7 @@ function displayLocation(position) {
  
 }
 
+
 function postGraffiti(){
   document.getElementById("page-header").innerHTML = "Post Graffiti";
   var graffitiList = document.getElementById("graffiti-list");
@@ -51,6 +55,8 @@ function postGraffiti(){
   // graffitiForm.style.visibility = "visible";
 
 }
+
+
 
 function listGraffiti(){
   document.getElementById("page-header").innerHTML = "Nearby Graffiti";

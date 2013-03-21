@@ -11,8 +11,19 @@ html
     script(src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js")
     script
       $(function() {
-        $( "#slider" ).slider();
+        $( "#slider" ).slider({
+          max:500,
+          value: 20,
+          slide: function(event,ui){
+            $("#slider-value").html(ui.value + "m radius");
+            $("#radius").val( ui.value );
+          }
+          
+
+          });
+
       });
+      
   body(onload='getUserLocation()')
     div.navbar.navbar-inverse
       div.navbar-inner
@@ -45,13 +56,21 @@ html
                     p #{post.message}
           div#graffiti-form.row-fluid
             div.span8
-              form
+              form(name="graffitipost", action="/addgraffiti", method="post")
                 fieldset
-                  label Post message
-                  textarea#input-textarea(rows="5")
-                  label Select Post Radius
+                  h4 Post message
+                  textarea#input-textarea(rows="5", name="message")
+                  h4 Select Post Radius
                   div#slider
+                  div#slider-value 
+                    strong 20 m radius
                   br
+                  
+                  input#lat-input(type="hidden",name="latitude",value="")
+                  input#long-input(type="hidden",name="longtitude",value="")
+                  input#radius(type="hidden",value="0", name="radius")
+                  input(type="hidden",value="CS210Student",name="user_id")
+
                   button(type="submit").btn Submit
 
 

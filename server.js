@@ -120,29 +120,18 @@ app.post('/demoresponse', function(req, res) {
 app.post('/login', function(req, res, next) {
     passport.authenticate('local', function(err, user, info) {
 	if (err) {
-	    // TODO: send err message
-	    return next(err);
+	    return res.send({error: "Error logging in, please try again."});
 	}
 	if (!user) {
-	    // TODO: send err message info
-	    return res.redirect('/login');
+	    return res.send({error: info.message});
 	}
-	console.log(user);
-	console.log(req.sessionStore);
-	console.log(req.sessionID);
-	console.log(req.session);
+
 	req.login(user, function(err) { // establish session??
-	    console.log(req.sessionStore);
-	    console.log(req.sessionID);
-	    console.log(req.session);
-	    //console.log(res);
 	    if (err) {
-		// TODO: send err message?
-		return next(err);
+		return res.send({error: "Error logging in, please try again."});
 	    }
 	    // TODO: return user in response
-	    res.send(user);
-	    //return res.redirect('/users/' + user.username);
+	    res.send({user: user});
 	});
     })(req, res, next);
 });
@@ -151,13 +140,17 @@ app.post('/signup', function(req, res) {
     if(req.body){
 	connection.query('INSERT INTO users (username, email, password_hash) VALUES (?,?,?);', [req.body.username, req.body.email, bcrypt.hashSync(req.body.password, SALT_ROUNDS)], function(err, result) {
 	    if (err) {
-		// return res.send("Username or email taken already"/err)??
+		if (err.code == "ER_DUP_ENTRY") {
+		    return res.send({error: "Username or email already taken."});
+		} else {
+		    return res.send({error: "Error signing up, please try again."});
+		}
 	    }
 
 	    // Log user in, send back user data
 	    connection.query('SELECT * FROM users WHERE id=?', [result.insertId], function(err, results) {
 		if (err) {
-		    // return res.send("Cannot login now, please try again later.")?? should work most of the time
+		    return res.send({error: "Error logging in, please try again."});
 		}
 
 		// TODO: error check for getting results?
@@ -166,9 +159,9 @@ app.post('/signup', function(req, res) {
 
 		req.login(user, function(err) {
 		    if (err) {
-			// return err? res.send("Cannot login now, please try again later.")
+			return res.send({error: "Error logging in, please try again."});
 		    }
-		    res.send(user);
+		    res.send({user: user});
 		});
 	    });
 	});
@@ -190,54 +183,8 @@ app.get('/home', function(req, res) {
     connection.query('SELECT * FROM posts;', function(err, results) {
         //res.send(results.reverse());
         //test post for local machine
-        // var posts = {'posts' : results.reverse()}
-        var posts = {"posts" : [{
-    "id": 36,
-    "message": "Asdf",
-    "image_url": null,
-    "latitude": 37.2537,
-    "longitude": 127.055,
-    "radius": 25,
-    "direction_x": 0,
-    "direction_y": 0,
-    "direction_z": 0,
-    "num_likes": 0,
-    "date_created": "2013-03-20T05:03:02.000Z",
-    "user_id": 1,
-    "num_flagged": 0
-  },
-  {
-    "id": 35,
-    "message": "Penis",
-    "image_url": null,
-    "latitude": 37.426854,
-    "longitude": -122.171853,
-    "radius": 25,
-    "direction_x": 0,
-    "direction_y": 0,
-    "direction_z": 0,
-    "num_likes": 0,
-    "date_created": "2013-03-14T00:52:11.000Z",
-    "user_id": 2,
-    "num_flagged": 0
-  },
-  {
-    "id": 34,
-    "message": "Wow\r\n",
-    "image_url": null,
-    "latitude": 37.426854,
-    "longitude": -122.171853,
-    "radius": 25,
-    "direction_x": 0,
-    "direction_y": 0,
-    "direction_z": 0,
-    "num_likes": 0,
-    "date_created": "2013-03-14T00:51:56.000Z",
-    "user_id": 2,
-    "num_flagged": 0
-  }]};
-        
-
+        var posts = {'posts' : results.reverse()}
+    
         for (var i = 0; i < posts.posts.length; i++){
             var date = new Date(posts.posts[i].date_created);
             posts.posts[i].date_created = date.getMonth()+1+'/'+date.getDate()+'/'+date.getFullYear()+' at '+date.getHours()%12+':'+date.getMinutes();

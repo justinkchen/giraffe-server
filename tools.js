@@ -10,6 +10,17 @@ exports.distance = function(lat1, lon1, lat2, lon2) {
     return 6371.0 * c;
 };
 
+/* Conversion functions
+ * km to m
+ * km to miles
+ * km to ft?
+
+*/
+
 function deg2rad(deg) {
-    return deg * Math.PI / 180;
+    return deg * Math.PI / 180.0;
+}
+
+function rad2deg(rad) {
+    return rad * 180.0 / Math.PI;
 }

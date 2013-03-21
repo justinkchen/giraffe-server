@@ -6026,3 +6026,7 @@ td > .login-input{
 #list-button {
   display: none;
 }
+
+.slider-value { 
+  color: blue;
+}

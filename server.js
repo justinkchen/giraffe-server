@@ -86,10 +86,6 @@ app.get('/', function(req, res) {
   });
 });
 
-app.get('/hello', function(req, res) {
-    res.send('Hello World');
-});
-
 app.post('/addgraffiti', function(req, res) {
     if(req.body.message){
         connection.query('INSERT INTO posts (message, latitude, longitude, radius, user_id) values (?,?,?,?,?);',[req.body.message, req.body.latitude, req.body.longitude, req.body.radius, req.body.userid], function(err, results) {
@@ -133,8 +129,8 @@ app.post('/login', function(req, res, next) {
 app.post('/signup', function(req, res) {
     if(req.body){
 	connection.query('INSERT INTO users (username, email, password_hash) VALUES (?,?,?);', [req.body.username, req.body.email, bcrypt.hashSync(req.body.password, SALT_ROUNDS)], function(err, results) {
-	    console.log(results);
-	    // TODO: log user in
+	    //console.log(results);
+	    // TODO: log user in, send back user data user.login?
 	    res.send(results);
 	});
     } else {

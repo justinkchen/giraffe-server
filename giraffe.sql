@@ -26,7 +26,9 @@ CREATE TABLE `users` (
 `date_joined`	TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 `num_flagged`	INT(11) UNSIGNED DEFAULT 0,
 
-PRIMARY KEY (id)
+PRIMARY KEY (id),
+UNIQUE (username),
+UNIQUE (email)
 );
 
 INSERT INTO `users` (full_name, username, email) values('Justin Chen', 'justinkchen', 'justinkchen@stanford.edu');

@@ -63,8 +63,7 @@ passport.use(new LocalStrategy({
 	    if (!bcrypt.compareSync(password, user.password_hash)) {
 		return done(null, false, { message: 'Incorrect username or password.' });
 	    }
-	    delete user.password_hash
-	    delete user.salt
+	    delete user.password_hash;
 	    return done(null, user);
 	});
     }
@@ -114,7 +113,7 @@ app.post('/login', function(req, res, next) {
 	    // TODO: send err message info
 	    return res.redirect('/login');
 	}
-	req.logIn(user, function(err) { // establish session??
+	req.login(user, function(err) { // establish session??
 	    if (err) {
 		// TODO: send err message?
 		return next(err);
@@ -128,10 +127,28 @@ app.post('/login', function(req, res, next) {
 
 app.post('/signup', function(req, res) {
     if(req.body){
-	connection.query('INSERT INTO users (username, email, password_hash) VALUES (?,?,?);', [req.body.username, req.body.email, bcrypt.hashSync(req.body.password, SALT_ROUNDS)], function(err, results) {
-	    //console.log(results);
-	    // TODO: log user in, send back user data user.login?
-	    res.send(results);
+	connection.query('INSERT INTO users (username, email, password_hash) VALUES (?,?,?);', [req.body.username, req.body.email, bcrypt.hashSync(req.body.password, SALT_ROUNDS)], function(err, result) {
+	    if (err) {
+		// return res.send("Username or email taken already"/err)??
+	    }
+
+	    // Log user in, send back user data
+	    connection.query('SELECT * FROM users WHERE id=?', [result.insertId], function(err, results) {
+		if (err) {
+		    // return res.send("Cannot login now, please try again later.")?? should work most of the time
+		}
+
+		// TODO: error check for getting results?
+		var user = results[0];
+		delete user.password_salt;
+
+		req.login(user, function(err) {
+		    if (err) {
+			// return err? res.send("Cannot login now, please try again later.")
+		    }
+		    res.send(user);
+		});
+	    });
 	});
     } else {
 	// TODO: proper response

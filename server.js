@@ -17,6 +17,8 @@ app.configure(function() {
     app.set('views',__dirname + '/views');
     app.set('view engine','jade');
 
+    app.use(express.cookieParser());
+    app.use(express.session({secret: 'cheezburger'}));
     app.use(passport.initialize());
     app.use(passport.session());
 });
@@ -44,6 +46,7 @@ var connection = mysql.createConnection({
     database : 'giraffe'
 });
  
+/* Passport configurations */
 passport.use(new LocalStrategy({
         usernameField: 'usernameEmail',
         passwordField: 'password',
@@ -68,6 +71,16 @@ passport.use(new LocalStrategy({
 	});
     }
 ));
+
+passport.serializeUser(function(user, done) {
+    done(null, user.id);
+});
+
+passport.deserializeUser(function(id, done) {
+    connection.query('SELECT id, full_name, username, email, fb_email, date_joined, num_flagged FROM users WHERE id=? LIMIT 1',[id], function(err, results) {
+	done(err, results[0]);
+    });
+});
 
 // listen for incoming connections from client
 io.sockets.on('connection', function (socket) {
@@ -113,7 +126,15 @@ app.post('/login', function(req, res, next) {
 	    // TODO: send err message info
 	    return res.redirect('/login');
 	}
+	console.log(user);
+	console.log(req.sessionStore);
+	console.log(req.sessionID);
+	console.log(req.session);
 	req.login(user, function(err) { // establish session??
+	    console.log(req.sessionStore);
+	    console.log(req.sessionID);
+	    console.log(req.session);
+	    //console.log(res);
 	    if (err) {
 		// TODO: send err message?
 		return next(err);
@@ -180,7 +201,3 @@ app.get('/home', function(req, res) {
     });
   
 });
-
-
-
-

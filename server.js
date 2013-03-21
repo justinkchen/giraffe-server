@@ -31,6 +31,8 @@ var options = {
     cert: fs.readFileSync('cert.pem')
 };
 
+/* bcrypt constants */
+var SALT_ROUNDS = 10;
 
 /* Database */
 /* Connect to MySQL */
@@ -130,7 +132,8 @@ app.post('/login', function(req, res, next) {
 
 app.post('/signup', function(req, res) {
     if(req.body){
-	connection.query('INSERT INTO users (username, email, password_hash) VALUES (?,?,?);', [req.body.username, req.body.email, bcrypt.hashSync(req.body.password, saltRounds)], function(err, results) {
+	connection.query('INSERT INTO users (username, email, password_hash) VALUES (?,?,?);', [req.body.username, req.body.email, bcrypt.hashSync(req.body.password, SALT_ROUNDS)], function(err, results) {
+	    console.log(results);
 	    // TODO: log user in
 	    res.send(results);
 	});

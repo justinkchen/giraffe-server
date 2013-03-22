@@ -10,6 +10,7 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var bcrypt = require('bcrypt');
 var crypto = require('crypto');
+var tools = require('./tools');
 
 app.configure(function() {
     app.use(express.static(__dirname + '/public'));
@@ -97,6 +98,26 @@ app.get('/', function(req, res) {
   connection.query('SELECT * FROM posts;', function(err, results) {
     res.send(results.reverse());
   });
+});
+
+var range = 0.5; // 500m
+// 111693.9173 - 110574.2727 (meters) latitude deg to meters
+// 0 - 111319.458 (meters) longitude deg to meters
+app.get('/nearby', function(req, res) {
+    if (req.query && req.query.latitude && req.query.longitude) {
+	connection.query('SELECT * FROM posts WHERE latitude > ? AND latitude < ? AND longitude > ? AND longitude < ?', [req.query.latitude - 0.01, req.query.latitude + 0.01, req.query.longitude - 1, req.query.longitude + 1], function(err, results) {
+	    nearby = [];
+	    for (var i in results) {
+		if (tools.distance(req.query.latitude, req.query.longitude, results[i].latitude, results[i].longitude) < range) {
+		    nearby.push(results[i]);
+		}
+	    }
+	    
+	    res.send(nearby);
+	});
+    } else {
+	res.send("No GET data read");
+    }
 });
 
 app.post('/addgraffiti', function(req, res) {

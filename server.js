@@ -138,6 +138,11 @@ app.post('/login', function(req, res, next) {
 
 app.post('/signup', function(req, res) {
     if(req.body){
+	if (req.body.email) {
+	    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+	    if (!re.test(req.body.email))
+		return res.send({error: "Not a valid email address."});
+	}
 	connection.query('INSERT INTO users (username, email, password_hash) VALUES (?,?,?);', [req.body.username, req.body.email, bcrypt.hashSync(req.body.password, SALT_ROUNDS)], function(err, result) {
 	    if (err) {
 		if (err.code == "ER_DUP_ENTRY") {

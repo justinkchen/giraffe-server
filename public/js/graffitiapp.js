@@ -32,8 +32,8 @@ $(function() {
         longitude = parseFloat(getUrlVars()["longitude"]);
 
 	// Demo purposes only
-        latitude = 37.426854;
-        longitude = -122.171853;
+        // latitude = 37.426854; // 320-105 Room
+        // longitude = -122.171853;
 	//
         userid = parseFloat(getUrlVars()["userid"]);
 	 // TODO: socket.emit the userid, latitude, and longitude and have server only broadcast a userid tagged list of locations so each user doesn't get the whole database

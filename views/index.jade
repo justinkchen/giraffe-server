@@ -11,6 +11,48 @@ html
     script(src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js")
     script
       $(function() {
+
+        $('a[name=modal]').click(function(e) {
+          //Cancel the link behavior
+          e.preventDefault();
+
+          //Get the A tag
+          var id = $(this).attr('href');
+
+          //Get the screen height and width
+          var maskHeight = $(document).height();
+          var maskWidth = $(window).width();
+
+          //Set heigth and width to mask to fill up the whole screen
+          $('#mask').css({'width':maskWidth,'height':maskHeight});
+
+          //transition effect   
+          $('#mask').fadeIn(1000);  
+          $('#mask').fadeTo("slow",0.8);  
+
+          //Get the window height and width
+          var winH = $(window).height();
+          var winW = $(window).width();
+
+          //Set the popup window to center
+          $(id).css('top',  winH/2-$(id).height()/2);
+          $(id).css('left', winW/2-$(id).width()/2);
+
+          //transition effect
+          $(id).fadeIn(2000); 
+
+        });
+
+        //if close button is clicked
+        $('.window .close').click(function (e) {
+          //Cancel the link behavior
+          e.preventDefault();
+
+          $('#mask').hide();
+          $('.window').hide();
+        });
+
+
         $( "#slider" ).slider({
           max:500,
           value: 20,
@@ -18,11 +60,9 @@ html
             $("#slider-value").html(ui.value + "m radius");
             $("#radius").val( ui.value );
           }
-          
-
           });
-
       });
+
       
   body(onload='getUserLocation()')
     div.navbar.navbar-inverse
@@ -32,10 +72,13 @@ html
           li.active
             a(href='#') Home
           li
-            a(href='#') Profile
+            a(href='#',name='modal') Profile
           li
             a(href='#') Settings
     div.container-fluid
+      div#boxes
+      div#dialog.window
+      div#mask
       div.row-fluid
         div.span4
           div.span8

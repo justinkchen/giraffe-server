@@ -181,7 +181,7 @@ app.post('/user/signup', function(req, res) {
 
 		// TODO: error check for getting results?
 		var user = results[0];
-		delete user.password_salt;
+		delete user.password_hash;
 
 		req.login(user, function(err) {
 		    if (err) {
@@ -199,8 +199,8 @@ app.post('/user/signup', function(req, res) {
 
 app.put('/user/update', function(req, res) {
     if (req.body) {
-	console.log(req.headers);
-	console.log(req.sessionStore);
+	//console.log(req.headers);
+	//console.log(req.sessionStore);
 	if (req.body.username && req.body.email) {
 	    // Update username or email
 
@@ -217,8 +217,13 @@ app.put('/user/update', function(req, res) {
 			return res.send({error: "Error updating, please try again."});
 		    }
 		} else {
-		    // TODO: return updated user
-		    console.log(req.user);
+		    selectUser(req.user.id, function(err, user) {
+			if (err) {
+			    return res.send({error: "Error updating, please try again."});
+			} else {
+			    res.send({user: user});
+			}
+		    });
 		}
 	    });
 	} else if (req.body.oldPassword && req.body.password) {
@@ -228,15 +233,21 @@ app.put('/user/update', function(req, res) {
 		    return res.send({error: "Error updating user, please try again."});
 		}
 
-		if (!bcrypt.compareSync(req.body.oldPassword, results[0].password_hash)) {
+		// TODO: error check results
+		var user = results[0];
+		if (bcrypt.compareSync(req.body.password, user.password_hash)) {
+		    return res.send({error: "Password unchanged."});
+		}
+
+		if (!bcrypt.compareSync(req.body.oldPassword, user.password_hash)) {
 		    return res.send({error: "Current password incorrect."});
 		} else {
 		    connection.query('UPDATE users SET password_hash=? WHERE id=?;', [bcrypt.hashSync(req.body.password, SALT_ROUNDS), req.user.id], function(err, result) {
 			if (err) {
 			    return res.send({error: "Error updating user, please try again."});
-			} else {
-			    // TODO: return updated user?
 			}
+			delete user.password_hash;
+			res.send({user: user});
 		    });
 		}
 	    });
@@ -255,8 +266,6 @@ server.listen(HTTP_PORT_NO);
 console.log('Listening to HTTPS on port ' + HTTPS_PORT_NO);
 https.createServer(options, app).listen(HTTPS_PORT_NO)
 
-
-
 app.get('/home', function(req, res) {
     connection.query('SELECT * FROM posts;', function(err, results) {
         //res.send(results.reverse());
@@ -272,3 +281,15 @@ app.get('/home', function(req, res) {
     });
   
 });
+
+
+var selectUser = function(id, cb) {
+    connection.query('SELECT * FROM users WHERE id=? LIMIT 1;', [id], function(err, results) {
+	var user = null;
+	if (results && results[0]) {
+	    user = results[0];
+	    delete user.password_hash;
+	}
+	cb(err, user);
+    });
+}

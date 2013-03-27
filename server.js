@@ -139,6 +139,8 @@ app.post('/demoresponse', function(req, res) {
 });
 
 app.post('/user/login', function(req, res, next) {
+    //console.log(req.user);
+    //console.log(req.headers);
     passport.authenticate('local', function(err, user, info) {
 	if (err) {
 	    return res.send({error: "Error logging in, please try again."});
@@ -199,8 +201,6 @@ app.post('/user/signup', function(req, res) {
 
 app.put('/user/update', function(req, res) {
     if (req.body) {
-	//console.log(req.headers);
-	//console.log(req.sessionStore);
 	if (req.body.username && req.body.email) {
 	    // Update username or email
 
@@ -258,7 +258,9 @@ app.put('/user/update', function(req, res) {
 });
 
 app.get('/user/logout', function(req, res) {
-
+    //console.log(req.user);
+    req.logout();
+    res.send({logout: ""});
 });
 
 console.log('Listening to HTTP on port ' + HTTP_PORT_NO);

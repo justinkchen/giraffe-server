@@ -1,3 +1,5 @@
+var circle;
+
 $(function() {
     var socket = io.connect("/");
     var pointArray, heatmap, map, locationData;
@@ -5,8 +7,6 @@ $(function() {
     var doc = $(document);
 
     var latitude, longitude, userid;
-
-    var circle;
 
     function initialize() {
         latitude = parseFloat(getUrlVars()["latitude"]);
@@ -27,6 +27,17 @@ $(function() {
         var mapOptions = {
             zoom: 17,
             center: myLatlng,
+            draggable: false,
+            minZoom: 17,
+            maxZoom: 20,
+            streetViewControl: false,
+            scaleControl: false,
+            panControl: false,
+            zoomControl: false,
+            rotateControl: false,
+            overviewMapControl: false,
+            mapTypeControl: false,
+            keyboardShortcuts: false,
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
 
@@ -46,7 +57,7 @@ $(function() {
             fillColor: "#FF0000",
             fillOpacity: 0.35,
             map: map,
-            radius: 500
+            radius: 50
         });
         circle.bindTo('center', marker, 'position');
 
@@ -68,10 +79,6 @@ $(function() {
         return vars;
     }
 
-    function updateRadius(rad){
-      circle.setRadius(rad);
-    }
-
     // handle geolocation api errors
     function positionError(error) {
         var errors = {
@@ -88,3 +95,8 @@ $(function() {
 
     google.maps.event.addDomListener(window, 'load', initialize);
 });
+
+// allows for dynamic circle radius update
+function updateRadius(rad){
+    circle.setRadius(rad);
+}

@@ -1,6 +1,4 @@
 $(function() {
-    // generate unique user id
-    var userId = Math.random().toString(16).substring(2,15);
     var socket = io.connect("/");
     var pointArray, heatmap, map, locationData;
     var info = $("#infobox");
@@ -36,7 +34,7 @@ $(function() {
         // longitude = -122.171853;
 	//
         userid = parseFloat(getUrlVars()["userid"]);
-	 // TODO: socket.emit the userid, latitude, and longitude and have server only broadcast a userid tagged list of locations so each user doesn't get the whole database
+
         if(!latitude){
             latitude = 0;
         }

@@ -139,6 +139,7 @@ app.post('/demoresponse', function(req, res) {
 });
 
 app.post('/user/login', function(req, res, next) {
+    console.log("login");
     passport.authenticate('local', function(err, user, info) {
 	if (err) {
 	    return res.send({error: "Error logging in, please try again."});
@@ -255,7 +256,8 @@ app.put('/user/update', function(req, res) {
     }
 });
 
-app.get('/user/logout', function(req, res) {
+app.post('/user/logout', function(req, res) {
+    console.log("logout");
     req.logout();
     res.send({logout: "Successfully logged out."});
 });

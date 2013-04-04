@@ -139,8 +139,6 @@ app.post('/demoresponse', function(req, res) {
 });
 
 app.post('/user/login', function(req, res, next) {
-    //console.log(req.user);
-    //console.log(req.headers);
     passport.authenticate('local', function(err, user, info) {
 	if (err) {
 	    return res.send({error: "Error logging in, please try again."});
@@ -154,7 +152,7 @@ app.post('/user/login', function(req, res, next) {
 		return res.send({error: "Error logging in, please try again."});
 	    }
 	    // TODO: return user in response
-	    res.send({user: user});
+	    res.send({user: user, message: "Successfully logged in."});
 	});
     })(req, res, next);
 });
@@ -189,7 +187,7 @@ app.post('/user/signup', function(req, res) {
 		    if (err) {
 			return res.send({error: "Error logging in, please try again."});
 		    }
-		    res.send({user: user});
+		    res.send({user: user, message: "Signed up and logged in."});
 		});
 	    });
 	});
@@ -221,7 +219,7 @@ app.put('/user/update', function(req, res) {
 			if (err) {
 			    return res.send({error: "Error updating, please try again."});
 			} else {
-			    res.send({user: user});
+			    res.send({user: user, message: "Succesfully updated user."});
 			}
 		    });
 		}
@@ -247,7 +245,7 @@ app.put('/user/update', function(req, res) {
 			    return res.send({error: "Error updating user, please try again."});
 			}
 			delete user.password_hash;
-			res.send({user: user});
+			res.send({user: user, message: "Succesfully updated user."});
 		    });
 		}
 	    });
@@ -258,9 +256,8 @@ app.put('/user/update', function(req, res) {
 });
 
 app.get('/user/logout', function(req, res) {
-    //console.log(req.user);
     req.logout();
-    res.send({logout: ""});
+    res.send({logout: "Successfully logged out."});
 });
 
 console.log('Listening to HTTP on port ' + HTTP_PORT_NO);

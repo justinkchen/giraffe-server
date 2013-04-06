@@ -53,7 +53,7 @@ passport.use(new LocalStrategy({
         passwordField: 'password',
     },
     function(usernameEmail, password, done) {
-	connection.query('SELECT * FROM users WHERE username=? OR email=? LIMIT 1',[usernameEmail, usernameEmail], function(err, results) {
+	connection.query('SELECT * FROM users WHERE username=? OR email=? LIMIT 1;',[usernameEmail, usernameEmail], function(err, results) {
 	    user = null;
 	    if (err) {
 		return done(err);
@@ -78,7 +78,7 @@ passport.serializeUser(function(user, done) {
 });
 
 passport.deserializeUser(function(id, done) {
-    connection.query('SELECT id, full_name, username, email, fb_email, date_joined, num_flagged FROM users WHERE id=? LIMIT 1',[id], function(err, results) {
+    connection.query('SELECT id, full_name, username, email, fb_email, date_joined, num_flagged FROM users WHERE id=? LIMIT 1;', [id], function(err, results) {
 	done(err, results[0]);
     });
 });
@@ -105,7 +105,7 @@ var range = 0.5; // 500m
 // 0 - 111319.458 (meters) longitude deg to meters
 app.get('/nearby', function(req, res) {
     if (req.query && req.query.latitude && req.query.longitude) {
-	connection.query('SELECT * FROM posts WHERE latitude > ? AND latitude < ? AND longitude > ? AND longitude < ?', [req.query.latitude - 0.01, req.query.latitude + 0.01, req.query.longitude - 1, req.query.longitude + 1], function(err, results) {
+	connection.query('SELECT * FROM posts WHERE latitude > ? AND latitude < ? AND longitude > ? AND longitude < ?;', [req.query.latitude - 0.01, req.query.latitude + 0.01, req.query.longitude - 1, req.query.longitude + 1], function(err, results) {
 	    nearby = [];
 	    for (var i in results) {
 		if (tools.distance(req.query.latitude, req.query.longitude, results[i].latitude, results[i].longitude) < range) {
@@ -138,7 +138,8 @@ app.post('/demoresponse', function(req, res) {
     }
 });
 
-app.post('/login', function(req, res, next) {
+app.post('/user/login', function(req, res, next) {
+    console.log("login");
     passport.authenticate('local', function(err, user, info) {
 	if (err) {
 	    return res.send({error: "Error logging in, please try again."});
@@ -152,12 +153,12 @@ app.post('/login', function(req, res, next) {
 		return res.send({error: "Error logging in, please try again."});
 	    }
 	    // TODO: return user in response
-	    res.send({user: user});
+	    res.send({user: user, message: "Successfully logged in."});
 	});
     })(req, res, next);
 });
 
-app.post('/signup', function(req, res) {
+app.post('/user/signup', function(req, res) {
     if(req.body){
 	if (req.body.email) {
 	    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -174,20 +175,20 @@ app.post('/signup', function(req, res) {
 	    }
 
 	    // Log user in, send back user data
-	    connection.query('SELECT * FROM users WHERE id=?', [result.insertId], function(err, results) {
+	    connection.query('SELECT * FROM users WHERE id=?;', [result.insertId], function(err, results) {
 		if (err) {
 		    return res.send({error: "Error logging in, please try again."});
 		}
 
 		// TODO: error check for getting results?
 		var user = results[0];
-		delete user.password_salt;
+		delete user.password_hash;
 
 		req.login(user, function(err) {
 		    if (err) {
 			return res.send({error: "Error logging in, please try again."});
 		    }
-		    res.send({user: user});
+		    res.send({user: user, message: "Signed up and logged in."});
 		});
 	    });
 	});
@@ -197,13 +198,74 @@ app.post('/signup', function(req, res) {
     }
 });
 
+app.put('/user/update', function(req, res) {
+    if (req.body) {
+	if (req.body.username && req.body.email) {
+	    // Update username or email
+
+	    // Check valid email
+	    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+	    if (!re.test(req.body.email))
+                return res.send({error: "Not a valid email address."});
+	    
+	    connection.query('UPDATE users SET username=?, email=? WHERE id=?;', [req.body.username, req.body.email, req.user.id], function(err, results) {
+		if (err) {
+		    if (err.code == "ER_DUP_ENTRY") {
+			return res.send({error: "Username or email already taken."});
+		    } else {
+			return res.send({error: "Error updating, please try again."});
+		    }
+		} else {
+		    selectUser(req.user.id, function(err, user) {
+			if (err) {
+			    return res.send({error: "Error updating, please try again."});
+			} else {
+			    res.send({user: user, message: "Succesfully updated user."});
+			}
+		    });
+		}
+	    });
+	} else if (req.body.oldPassword && req.body.password) {
+	    // Update password
+	    connection.query('SELECT * FROM users WHERE id=? LIMIT 1;', [req.user.id], function(err, results) {
+		if (err) {
+		    return res.send({error: "Error updating user, please try again."});
+		}
+
+		// TODO: error check results
+		var user = results[0];
+		if (bcrypt.compareSync(req.body.password, user.password_hash)) {
+		    return res.send({error: "Password unchanged."});
+		}
+
+		if (!bcrypt.compareSync(req.body.oldPassword, user.password_hash)) {
+		    return res.send({error: "Current password incorrect."});
+		} else {
+		    connection.query('UPDATE users SET password_hash=? WHERE id=?;', [bcrypt.hashSync(req.body.password, SALT_ROUNDS), req.user.id], function(err, result) {
+			if (err) {
+			    return res.send({error: "Error updating user, please try again."});
+			}
+			delete user.password_hash;
+			res.send({user: user, message: "Succesfully updated user."});
+		    });
+		}
+	    });
+	}
+    } else {
+	res.send("No PUT data read");
+    }
+});
+
+app.post('/user/logout', function(req, res) {
+    console.log("logout");
+    req.logout();
+    res.send({logout: "Successfully logged out."});
+});
 
 console.log('Listening to HTTP on port ' + HTTP_PORT_NO);
 server.listen(HTTP_PORT_NO);
 console.log('Listening to HTTPS on port ' + HTTPS_PORT_NO);
 https.createServer(options, app).listen(HTTPS_PORT_NO)
-
-
 
 app.get('/home', function(req, res) {
     connection.query('SELECT * FROM posts;', function(err, results) {
@@ -251,3 +313,15 @@ app.get('/home', function(req, res) {
     });
   
 });
+
+
+var selectUser = function(id, cb) {
+    connection.query('SELECT * FROM users WHERE id=? LIMIT 1;', [id], function(err, results) {
+	var user = null;
+	if (results && results[0]) {
+	    user = results[0];
+	    delete user.password_hash;
+	}
+	cb(err, user);
+    });
+}

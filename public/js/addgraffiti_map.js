@@ -1,40 +1,19 @@
+var circle;
+
 $(function() {
     var socket = io.connect("/");
     var pointArray, heatmap, map, locationData;
     var info = $("#infobox");
     var doc = $(document);
- 
-    var sentData = {}
- 
-    var markers = {};
 
     var latitude, longitude, userid;
-
-    socket.on("load:coords", function(data) {
-         var locationData = new Array();
-         // display posts requested by specific user
-         for(var i in data) {
-             locationData.push(new google.maps.LatLng(data[i].latitude, data[i].longitude));
-        }
-        pointArray = new google.maps.MVCArray(locationData);
-        heatmap = new google.maps.visualization.HeatmapLayer({
-            data: pointArray
-        });
-        heatmap.setOptions({radius: 50});
-        heatmap.setOptions({dissipating: true});
-        heatmap.setMap(map);
-    });
 
     function initialize() {
         latitude = parseFloat(getUrlVars()["latitude"]);
         longitude = parseFloat(getUrlVars()["longitude"]);
 
-	// Demo purposes only
-        // latitude = 37.426854; // 320-105 Room
-        // longitude = -122.171853;
-	//
         userid = parseFloat(getUrlVars()["userid"]);
-
+	
         if(!latitude){
             latitude = 0;
         }
@@ -48,6 +27,17 @@ $(function() {
         var mapOptions = {
             zoom: 17,
             center: myLatlng,
+            draggable: false,
+            minZoom: 17,
+            maxZoom: 20,
+            streetViewControl: false,
+            scaleControl: false,
+            panControl: false,
+            zoomControl: false,
+            rotateControl: false,
+            overviewMapControl: false,
+            mapTypeControl: false,
+            keyboardShortcuts: false,
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
 
@@ -60,12 +50,16 @@ $(function() {
                 title: 'You are here!'
         });
 
-        //pointArray = new google.maps.MVCArray(locationData);
-        //heatmap = new google.maps.visualization.HeatmapLayer({
-        //    data: pointArray
-        //});
-
-        //heatmap.setMap(map);
+        circle = new google.maps.Circle({
+            strokeColor: "#FF0000",
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: "#FF0000",
+            fillOpacity: 0.35,
+            map: map,
+            radius: 50
+        });
+        circle.bindTo('center', marker, 'position');
 
     }
 
@@ -85,31 +79,6 @@ $(function() {
         return vars;
     }
 
- /*
-    function positionSuccess(position) {
-        var lat = position.coords.latitude;
-        var lng = position.coords.longitude;
-        var acr = position.coords.accuracy;
- 
-
-        // send coords on when user is active
-        doc.on("mousemove", function() {
-            active = true; 
- 
-            sentData = {
-                id: userId,
-                active: active,
-                coords: [{
-                    lat: lat,
-                    lng: lng,
-                    acr: acr
-                }]
-            }
-            socket.emit("send:coords", sentData);
-        });
-    }
- */
-
     // handle geolocation api errors
     function positionError(error) {
         var errors = {
@@ -126,3 +95,8 @@ $(function() {
 
     google.maps.event.addDomListener(window, 'load', initialize);
 });
+
+// allows for dynamic circle radius update
+function updateRadius(rad){
+    circle.setRadius(rad);
+}

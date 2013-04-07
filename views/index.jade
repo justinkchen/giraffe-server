@@ -5,11 +5,19 @@ html
     link(rel='stylesheet', href='/css/bootstrap.css')
     link(rel='stylesheet', href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css")
     meta(name="viewport", content="initial-scale=1.0, user-scalable=no")
-    script(type='text/javascript', src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAfTnmwTl7XdOd9FVQyCjG1Vy6PWdqmISI&sensor=false")
+    script(type='text/javascript', src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAfTnmwTl7XdOd9FVQyCjG1Vy6PWdqmISI&sensor=false&libraries=visualization")
     script(type='text/javascript', src='/js/webapplication.js')
     script(src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js")
     script(src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js")
     script
+      var locationData = new Array();
+      var posts = !{JSON.stringify(posts)};
+      // alert('#{posts.length}');
+      // for (var i = 0; i < '#{posts.length}'; i++){
+      //   alert(i);
+      // }
+      // alert('!{posts[0].id}');
+      // window.posts = #{posts};
       $(function() {
 
         $('a[name=modal]').click(function(e) {
@@ -64,7 +72,7 @@ html
       });
 
       
-  body(onload='getUserLocation()')
+  body(onload='getUserLocation(); showHeatmap(posts);')
     div.navbar.navbar-inverse
       div.navbar-inner
         a.brand(href='#') Giraffe
@@ -72,13 +80,15 @@ html
           li.active
             a(href='#') Home
           li
-            a(href='#',name='modal') Profile
+            a(href='#dialog',name='modal') Profile
           li
             a(href='#') Settings
     div.container-fluid
       div#boxes
-      div#dialog.window
-      div#mask
+        div#dialog.window
+          a(href="#").close Continue without login
+          p User Login
+        div#mask
       div.row-fluid
         div.span4
           div.span8
@@ -88,6 +98,7 @@ html
               d Post Graffiti
             button#list-button.btn.btn-large.btn-primary(type="button", onclick="listGraffiti()")
               d Back
+          button.button.btn-primary(onclick="showHeatmap(window.posts)") Hi
           div#graffiti-list
             table.table.table-bordered
               for post in posts

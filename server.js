@@ -268,41 +268,11 @@ console.log('Listening to HTTPS on port ' + HTTPS_PORT_NO);
 https.createServer(options, app).listen(HTTPS_PORT_NO)
 
 app.get('/home', function(req, res) {
-    connection.query('SELECT * FROM posts;', function(err, results) {
-        //res.send(results.reverse());
+     connection.query('SELECT * FROM posts;', function(err, results) {
+        res.send(results.reverse());
         //test post for local machine
-        // var posts = {'posts' : results.reverse()}
-        var posts = {'posts' : [
-  {
-    "id": 37,
-    "message": "Posting graffiti from Hong Kong!",
-    "image_url": null,
-    "latitude": 22.2693694,
-    "longitude": null,
-    "radius": 102,
-    "direction_x": 0,
-    "direction_y": 0,
-    "direction_z": 0,
-    "num_likes": 0,
-    "date_created": "2013-03-21T19:27:44.000Z",
-    "user_id": null,
-    "num_flagged": 0
-  },
-  {
-    "id": 36,
-    "message": "Asdf",
-    "image_url": null,
-    "latitude": 37.2537,
-    "longitude": 127.055,
-    "radius": 25,
-    "direction_x": 0,
-    "direction_y": 0,
-    "direction_z": 0,
-    "num_likes": 0,
-    "date_created": "2013-03-20T05:03:02.000Z",
-    "user_id": 1,
-    "num_flagged": 0
-  }]};
+        var posts = {'posts' : results.reverse()}
+        
     
         for (var i = 0; i < posts.posts.length; i++){
             var date = new Date(posts.posts[i].date_created);
@@ -310,7 +280,7 @@ app.get('/home', function(req, res) {
             
         }
         res.render('index',posts); 
-    });
+     });
   
 });
 

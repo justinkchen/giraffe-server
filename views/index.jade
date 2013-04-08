@@ -98,7 +98,6 @@ html
               d Post Graffiti
             button#list-button.btn.btn-large.btn-primary(type="button", onclick="listGraffiti()")
               d Back
-          button.button.btn-primary(onclick="showHeatmap(window.posts)") Hi
           div#graffiti-list
             table.table.table-bordered
               for post in posts
@@ -121,7 +120,7 @@ html
                   br
                   
                   input#lat-input(type="hidden",name="latitude",value="")
-                  input#long-input(type="hidden",name="longtitude",value="")
+                  input#long-input(type="hidden",name="longitude",value="")
                   input#radius(type="hidden",value="0", name="radius")
                   input(type="hidden",value="CS210Student",name="user_id")
 

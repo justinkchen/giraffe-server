@@ -18,7 +18,6 @@ function initialize(position) {
 
 function displayLocation(position) { 
   var initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
-
   document.getElementById("lat-input").value = position.coords.latitude;
   document.getElementById("long-input").value = position.coords.longitude;
   // Location for Test purposes
@@ -33,10 +32,24 @@ function displayLocation(position) {
   window.map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
   var marker = new google.maps.Marker({
     position: initialLocation,
-    map: map,
+    map: window.map,
     title: "You are here"
   });
-  marker.setMap(window.map);
+  // marker.setMap(window.map);
+
+  //add markers for all posts
+  for (var i in posts){
+    var lat = posts[i].latitude;
+    var lng = posts[i].longitude;
+
+    var graffitiMarker = new google.maps.Marker({
+      position: new google.maps.LatLng(lat,lng),
+      map: window.map,
+      title: posts[i].message
+    });
+    // graffitiMarker.setMap(window.map)
+
+  }
 
 }
 

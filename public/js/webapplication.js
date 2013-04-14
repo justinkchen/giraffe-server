@@ -13,6 +13,7 @@ function initialize(position) {
     mapTypeId: google.maps.MapTypeId.ROADMAP
   };
   map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+  window.map = map;
 }
 
 function displayLocation(position) { 
@@ -28,14 +29,28 @@ function displayLocation(position) {
       zoom: 18,
       mapTypeId: google.maps.MapTypeId.ROADMAP
   };
-  var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+  window.map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
   var marker = new google.maps.Marker({
     position: initialLocation,
-    map: map,
+    map: window.map,
     title: "You are here"
   });
-  marker.setMap(map);
- 
+  // marker.setMap(window.map);
+
+  //add markers for all posts
+  for (var i in posts){
+    var lat = posts[i].latitude;
+    var lng = posts[i].longitude;
+
+    var graffitiMarker = new google.maps.Marker({
+      position: new google.maps.LatLng(lat,lng),
+      map: window.map,
+      title: posts[i].message
+    });
+    // graffitiMarker.setMap(window.map)
+
+  }
+
 }
 
 
@@ -70,6 +85,8 @@ function listGraffiti(){
 }
 
 
+
+
 function pinMessages(map,initialLocation){
 
   var pinLocation = new google.maps.LatLng(37.4268,-122.172853);
@@ -78,10 +95,27 @@ function pinMessages(map,initialLocation){
     map: map,
     title: "Pin"
   }); 
-  newmarker.setMap(map);
+  newmarker.setMap(window.map);
 
 
 }
+
+function showHeatmap(posts){
+  var locationData = new Array();
+
+  for (var i in posts){
+    var newLoc = new google.maps.LatLng(posts[i].latitude,posts[i].longitude);
+    locationData.push(newLoc);
+  }
+  var heatArray = new google.maps.MVCArray(locationData);
+  var heatmapLayer = new google.maps.visualization.HeatmapLayer({
+    data: heatArray
+  });
+  heatmapLayer.setOptions({radius: 50});
+  heatmapLayer.setOptions({dissipating: true});
+
+}
+
 
 
 

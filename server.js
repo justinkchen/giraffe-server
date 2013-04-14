@@ -279,10 +279,11 @@ console.log('Listening to HTTPS on port ' + HTTPS_PORT_NO);
 https.createServer(options, app).listen(HTTPS_PORT_NO)
 
 app.get('/home', function(req, res) {
-    connection.query('SELECT * FROM posts;', function(err, results) {
-        //res.send(results.reverse());
+     connection.query('SELECT * FROM posts;', function(err, results) {
+        res.send(results.reverse());
         //test post for local machine
         var posts = {'posts' : results.reverse()}
+        
     
         for (var i = 0; i < posts.posts.length; i++){
             var date = new Date(posts.posts[i].date_created);
@@ -290,7 +291,7 @@ app.get('/home', function(req, res) {
             
         }
         res.render('index',posts); 
-    });
+     });
   
 });
 

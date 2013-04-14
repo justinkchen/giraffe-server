@@ -30,8 +30,8 @@ var HTTPS_PORT_NO = 8000; // cannot use 443
 
 /* HTTPS options */
 var options = {
-    key: fs.readFileSync('key.pem'),
-    cert: fs.readFileSync('cert.pem')
+    key: fs.readFileSync('https/key.pem'),
+    cert: fs.readFileSync('https/cert.pem')
 };
 
 /* bcrypt constants */
@@ -105,7 +105,7 @@ var range = 0.5; // 500m
 // 0 - 111319.458 (meters) longitude deg to meters
 app.get('/nearby', function(req, res) {
     if (req.query && req.query.latitude && req.query.longitude) {
-	connection.query('SELECT * FROM posts WHERE latitude > ? AND latitude < ? AND longitude > ? AND longitude < ?;', [req.query.latitude - 0.01, req.query.latitude + 0.01, req.query.longitude - 1, req.query.longitude + 1], function(err, results) {
+	connection.query('SELECT * FROM (SELECT * FROM posts) AS p, (SELECT id, username FROM users) AS u WHERE p.user_id = u.id AND latitude > ? AND latitude < ? AND longitude > ? AND longitude < ?;', [req.query.latitude - 0.01, req.query.latitude + 0.01, req.query.longitude - 1, req.query.longitude + 1], function(err, results) {
 	    nearby = [];
 	    for (var i in results) {
 		if (tools.distance(req.query.latitude, req.query.longitude, results[i].latitude, results[i].longitude) < range) {
@@ -113,7 +113,7 @@ app.get('/nearby', function(req, res) {
 		}
 	    }
 	    
-	    res.send(nearby);
+	    res.send({posts: nearby});
 	});
     } else {
 	res.send("No GET data read");
@@ -140,6 +140,7 @@ app.post('/demoresponse', function(req, res) {
 
 app.post('/user/login', function(req, res, next) {
     console.log("login");
+    console.log(req.headers);
     passport.authenticate('local', function(err, user, info) {
 	if (err) {
 	    return res.send({error: "Error logging in, please try again."});
@@ -199,6 +200,8 @@ app.post('/user/signup', function(req, res) {
 });
 
 app.put('/user/update', function(req, res) {
+    console.log('update');
+    console.log(req.headers);
     if (req.body) {
 	if (req.body.username && req.body.email) {
 	    // Update username or email
@@ -253,6 +256,14 @@ app.put('/user/update', function(req, res) {
 	}
     } else {
 	res.send("No PUT data read");
+    }
+});
+
+app.post('/user/avatar', function(req, res) {
+    if (req.body) {
+	console.log(req);
+    } else {
+	res.send("No POST data read");
     }
 });
 

@@ -17,7 +17,6 @@ function initialize(position) {
 
 function displayLocation(position) { 
   var initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
-
   document.getElementById("lat-input").value = position.coords.latitude;
   document.getElementById("long-input").value = position.coords.longitude;
   // Location for Test purposes

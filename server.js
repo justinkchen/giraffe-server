@@ -10,11 +10,12 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var bcrypt = require('bcrypt');
 var crypto = require('crypto');
+var _ = require('underscore');
 var tools = require('./tools');
 
 app.configure(function() {
     app.use(express.static(__dirname + '/public'));
-    app.use(express.bodyParser());
+    app.use(express.bodyParser({keepExtensions: true, uploadDir: 'uploads'}));
     app.set('views',__dirname + '/views');
     app.set('view engine','jade');
 
@@ -202,7 +203,7 @@ app.post('/user/signup', function(req, res) {
 app.put('/user/update', function(req, res) {
     console.log('update');
     console.log(req.headers);
-    if (req.body) {
+    if (!_.isEmpty(req.body)) {
 	if (req.body.username && req.body.email) {
 	    // Update username or email
 
@@ -254,11 +255,57 @@ app.put('/user/update', function(req, res) {
 		}
 	    });
 	}
+    } else if (!_.isEmpty(req.files)) {
+	if (req.files.avatar) {
+	    // use fs to copy the image
+	    // use name to preserve file format?
+	    // req.files.avatar.path
+	    console.log(req.files.avatar);
+	    var ext = req.files.avatar.path.split('.').pop();
+	    //var path = req.files.avatar.path.split('/');
+	    var hash = crypto.createHash('sha256');
+	    fs.readFile(req.files.avatar.path, function(err, data) {
+		if (err) {
+		    return res.send({error: "Error updating, please try again."});
+		}
+		
+		hash.update(data);
+		var digest = hash.digest('hex');
+		var filePath = 'images/user/' + digest + '.' + ext;
+		fs.rename(req.files.avatar.path, filePath, function(err) {
+		    console.log(filePath);
+	    
+		    connection.query('UPDATE users SET avatar=? WHERE id=?;', [filePath, req.user.id], function(err, results) {
+			if (err) {
+			    return res.send({error: "Error updating, please try again."});
+			} else {
+			    selectUser(req.user.id, function(err, user) {
+				if (err) {
+				    return res.send({error: "Error updating, please try again."});
+			    	} else {
+				    res.send({user: user, message: "Successfully updated user."});
+				}
+			    });
+			}
+		    });
+		});
+	    });
+	}
     } else {
 	res.send("No PUT data read");
     }
 });
 
+// Returns the user's posts
+app.get('/user/posts', function(req, res) {
+    if (req.user && req.user.id) {
+	connection.query('SELECT * FROM posts WHERE user_id=?', [req.user.id], function(err, results) {
+	    res.send({posts: results});
+	});
+    }
+});
+
+/*
 app.post('/user/avatar', function(req, res) {
     if (req.body) {
 	console.log(req);
@@ -266,6 +313,7 @@ app.post('/user/avatar', function(req, res) {
 	res.send("No POST data read");
     }
 });
+*/
 
 app.post('/user/logout', function(req, res) {
     console.log("logout");

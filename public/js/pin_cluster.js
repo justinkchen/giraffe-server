@@ -318,7 +318,37 @@
                 e.type = 'cluster' + e.type;
             }
             L.FeatureGroup.prototype._propagateEvent.call(this, e);
-        }
+        },
+
+        onAdd: function (map) {
+            this._map = map;
+            if (!this._gridClusters) {
+                this._generateInitialClusters();
+            }
+            for (var i = 0, l = this._needsClustering.length; i < l; i++) {
+                var layer = this._needsClustering[i];
+                if (layer.__parent) {
+                    continue;
+                }
+                this._addLayer(layer, this._maxZoom);
+            }
+            this._needsClustering = [];
+            this._map.on('zoomend', this._zoomEnd, this);
+            this._map.on('moveend', this._moveEnd, this);
+            if (this._spiderfierOnAdd) {
+                this._spiderfierOnAdd();
+            }
+            this._bindEvents();
+            this._zoom = this._map.getZoom();
+            this._currentShownBounds = this._getExpandedVisibleBounds();
+            this._topClusterLevel._recursivelyAddChildrenToMap(null, this._zoom, this._currentShownBounds);
+
     }
+    _animationZoomOut: function (previousZoomLevel, newZoomLevel) {
+            this._animationZoomOutSingle(this._topClusterLevel, previousZoomLevel - 1, newZoomLevel);
+            this._topClusterLevel._recursivelyAddChildrenToMap(null, newZoomLevel, this._getExpandedVisibleBounds());
+            this._topClusterLevel._recursivelyRemoveChildrenFromMap(this._currentShownBounds, previousZoomLevel, this._getExpandedVisibleBounds());
+}
+
 
 }

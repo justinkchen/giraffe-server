@@ -19,16 +19,23 @@ PRIMARY KEY (id)
 CREATE TABLE `users` (
 `id` INT(11) UNSIGNED AUTO_INCREMENT,
 `full_name` VARCHAR(50) DEFAULT NULL,
-`username` VARCHAR(25) DEFAULT NULL,
-`email` VARCHAR(50) DEFAULT NULL,
-`fb_email`	VARCHAR(50) DEFAULT NULL,
+`username` VARCHAR(25) NOT NULL,
+`email` VARCHAR(50) NOT NULL,
 `password_hash`	VARCHAR(100) DEFAULT NULL,
+`avatar` VARCHAR(100) DEFAULT NULL,
 `date_joined`	TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 `num_flagged`	INT(11) UNSIGNED DEFAULT 0,
 
 PRIMARY KEY (id),
 UNIQUE (username),
 UNIQUE (email)
+);
+
+CREATE TABLE `likes` (
+`post_id` INT(11) DEFAULT 0,
+`user_id` INT(11) DEFAULT 0,
+
+PRIMARY KEY (post_id, user_id)x`
 );
 
 INSERT INTO `users` (full_name, username, email) values('Justin Chen', 'justinkchen', 'justinkchen@stanford.edu');

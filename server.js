@@ -10,11 +10,12 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var bcrypt = require('bcrypt');
 var crypto = require('crypto');
+var _ = require('underscore');
 var tools = require('./tools');
 
 app.configure(function() {
     app.use(express.static(__dirname + '/public'));
-    app.use(express.bodyParser());
+    app.use(express.bodyParser({keepExtensions: true, uploadDir: 'uploads'}));
     app.set('views',__dirname + '/views');
     app.set('view engine','jade');
 
@@ -30,8 +31,8 @@ var HTTPS_PORT_NO = 8000; // cannot use 443
 
 /* HTTPS options */
 var options = {
-    key: fs.readFileSync('key.pem'),
-    cert: fs.readFileSync('cert.pem')
+    key: fs.readFileSync('https/key.pem'),
+    cert: fs.readFileSync('https/cert.pem')
 };
 
 /* bcrypt constants */
@@ -105,7 +106,7 @@ var range = 0.5; // 500m
 // 0 - 111319.458 (meters) longitude deg to meters
 app.get('/nearby', function(req, res) {
     if (req.query && req.query.latitude && req.query.longitude) {
-	connection.query('SELECT * FROM posts WHERE latitude > ? AND latitude < ? AND longitude > ? AND longitude < ?;', [req.query.latitude - 0.01, req.query.latitude + 0.01, req.query.longitude - 1, req.query.longitude + 1], function(err, results) {
+	connection.query('SELECT * FROM (SELECT * FROM posts) AS p, (SELECT id, username FROM users) AS u WHERE p.user_id = u.id AND latitude > ? AND latitude < ? AND longitude > ? AND longitude < ?;', [req.query.latitude - 0.01, req.query.latitude + 0.01, req.query.longitude - 1, req.query.longitude + 1], function(err, results) {
 	    nearby = [];
 	    for (var i in results) {
 		if (tools.distance(req.query.latitude, req.query.longitude, results[i].latitude, results[i].longitude) < range) {
@@ -113,7 +114,7 @@ app.get('/nearby', function(req, res) {
 		}
 	    }
 	    
-	    res.send(nearby);
+	    res.send({posts: nearby});
 	});
     } else {
 	res.send("No GET data read");
@@ -140,6 +141,7 @@ app.post('/demoresponse', function(req, res) {
 
 app.post('/user/login', function(req, res, next) {
     console.log("login");
+    console.log(req.headers);
     passport.authenticate('local', function(err, user, info) {
 	if (err) {
 	    return res.send({error: "Error logging in, please try again."});
@@ -199,7 +201,9 @@ app.post('/user/signup', function(req, res) {
 });
 
 app.put('/user/update', function(req, res) {
-    if (req.body) {
+    console.log('update');
+    console.log(req.headers);
+    if (!_.isEmpty(req.body)) {
 	if (req.body.username && req.body.email) {
 	    // Update username or email
 
@@ -251,10 +255,65 @@ app.put('/user/update', function(req, res) {
 		}
 	    });
 	}
+    } else if (!_.isEmpty(req.files)) {
+	if (req.files.avatar) {
+	    // use fs to copy the image
+	    // use name to preserve file format?
+	    // req.files.avatar.path
+	    console.log(req.files.avatar);
+	    var ext = req.files.avatar.path.split('.').pop();
+	    //var path = req.files.avatar.path.split('/');
+	    var hash = crypto.createHash('sha256');
+	    fs.readFile(req.files.avatar.path, function(err, data) {
+		if (err) {
+		    return res.send({error: "Error updating, please try again."});
+		}
+		
+		hash.update(data);
+		var digest = hash.digest('hex');
+		var filePath = 'images/user/' + digest + '.' + ext;
+		fs.rename(req.files.avatar.path, filePath, function(err) {
+		    console.log(filePath);
+	    
+		    connection.query('UPDATE users SET avatar=? WHERE id=?;', [filePath, req.user.id], function(err, results) {
+			if (err) {
+			    return res.send({error: "Error updating, please try again."});
+			} else {
+			    selectUser(req.user.id, function(err, user) {
+				if (err) {
+				    return res.send({error: "Error updating, please try again."});
+			    	} else {
+				    res.send({user: user, message: "Successfully updated user."});
+				}
+			    });
+			}
+		    });
+		});
+	    });
+	}
     } else {
 	res.send("No PUT data read");
     }
 });
+
+// Returns the user's posts
+app.get('/user/posts', function(req, res) {
+    if (req.user && req.user.id) {
+	connection.query('SELECT * FROM posts WHERE user_id=?', [req.user.id], function(err, results) {
+	    res.send({posts: results});
+	});
+    }
+});
+
+/*
+app.post('/user/avatar', function(req, res) {
+    if (req.body) {
+	console.log(req);
+    } else {
+	res.send("No POST data read");
+    }
+});
+*/
 
 app.post('/user/logout', function(req, res) {
     console.log("logout");

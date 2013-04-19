@@ -268,10 +268,196 @@ console.log('Listening to HTTPS on port ' + HTTPS_PORT_NO);
 https.createServer(options, app).listen(HTTPS_PORT_NO)
 
 app.get('/home', function(req, res) {
-     connection.query('SELECT * FROM posts;', function(err, results) {
-        res.send(results.reverse());
+     // connection.query('SELECT * FROM posts;', function(err, results) {
+        // res.send(results.reverse());
         //test post for local machine
-        var posts = {'posts' : results.reverse()}
+        // var posts = {'posts' : results.reverse()}
+        var posts = {'posts' : 
+[
+  {
+    "id": 12,
+    "message": "In cs210, about to present software demo...hope everything works out!",
+    "image_url": null,
+    "latitude": 37.426854,
+    "longitude": -122.171853,
+    "radius": 25,
+    "direction_x": 0,
+    "direction_y": 0,
+    "direction_z": 0,
+    "num_likes": 0,
+    "date_created": "2013-04-10T05:25:57.000Z",
+    "user_id": 2,
+    "num_flagged": 0
+  },
+  {
+    "id": 11,
+    "message": "Almost at cs210 class!! Can't wait!",
+    "image_url": null,
+    "latitude": 37.427008,
+    "longitude": -122.171499,
+    "radius": 25,
+    "direction_x": 0,
+    "direction_y": 0,
+    "direction_z": 0,
+    "num_likes": 0,
+    "date_created": "2013-04-10T05:25:57.000Z",
+    "user_id": 2,
+    "num_flagged": 0
+  },
+  {
+    "id": 10,
+    "message": "This path through the main quad is actually really awesome...",
+    "image_url": null,
+    "latitude": 37.426816,
+    "longitude": -122.171144,
+    "radius": 25,
+    "direction_x": 0,
+    "direction_y": 0,
+    "direction_z": 0,
+    "num_likes": 0,
+    "date_created": "2013-04-10T05:25:57.000Z",
+    "user_id": 2,
+    "num_flagged": 0
+  },
+  {
+    "id": 9,
+    "message": "Just saw the Pope inside the Round Room of the Memorial Church!",
+    "image_url": null,
+    "latitude": 37.426565,
+    "longitude": -122.170817,
+    "radius": 25,
+    "direction_x": 0,
+    "direction_y": 0,
+    "direction_z": 0,
+    "num_likes": 0,
+    "date_created": "2013-04-10T05:25:57.000Z",
+    "user_id": 2,
+    "num_flagged": 0
+  },
+  {
+    "id": 8,
+    "message": "FML just tripped and fell in front of a group of tourists...",
+    "image_url": null,
+    "latitude": 37.426373,
+    "longitude": -122.17057,
+    "radius": 25,
+    "direction_x": 0,
+    "direction_y": 0,
+    "direction_z": 0,
+    "num_likes": 0,
+    "date_created": "2013-04-10T05:25:57.000Z",
+    "user_id": 2,
+    "num_flagged": 0
+  },
+  {
+    "id": 7,
+    "message": "Go Stanford! #freshman",
+    "image_url": null,
+    "latitude": 37.426531,
+    "longitude": -122.170157,
+    "radius": 25,
+    "direction_x": 0,
+    "direction_y": 0,
+    "direction_z": 0,
+    "num_likes": 0,
+    "date_created": "2013-04-10T05:25:57.000Z",
+    "user_id": 2,
+    "num_flagged": 0
+  },
+  {
+    "id": 6,
+    "message": "JC wuz here #mensbathroom",
+    "image_url": null,
+    "latitude": 37.426535,
+    "longitude": -122.169701,
+    "radius": 25,
+    "direction_x": 0,
+    "direction_y": 0,
+    "direction_z": 0,
+    "num_likes": 0,
+    "date_created": "2013-04-10T05:25:57.000Z",
+    "user_id": 2,
+    "num_flagged": 0
+  },
+  {
+    "id": 5,
+    "message": "First time using this application...pretty cool!!",
+    "image_url": null,
+    "latitude": 37.426607,
+    "longitude": -122.16924,
+    "radius": 25,
+    "direction_x": 0,
+    "direction_y": 0,
+    "direction_z": 0,
+    "num_likes": 0,
+    "date_created": "2013-04-10T05:25:57.000Z",
+    "user_id": 2,
+    "num_flagged": 0
+  },
+  {
+    "id": 4,
+    "message": "The Stanford Memorial church is a must-see on your trip to Stanford.  Absolutely inspiring when you go in",
+    "image_url": null,
+    "latitude": 37.427174,
+    "longitude": -122.170377,
+    "radius": 25,
+    "direction_x": 0,
+    "direction_y": 0,
+    "direction_z": 0,
+    "num_likes": 0,
+    "date_created": "2013-04-10T05:25:57.000Z",
+    "user_id": 2,
+    "num_flagged": 0
+  },
+  {
+    "id": 3,
+    "message": "Hey I wanna chat! what's up? #bldg110",
+    "image_url": null,
+    "latitude": 37.428004,
+    "longitude": -122.170635,
+    "radius": 25,
+    "direction_x": 0,
+    "direction_y": 0,
+    "direction_z": 0,
+    "num_likes": 0,
+    "date_created": "2013-04-10T05:25:57.000Z",
+    "user_id": 2,
+    "num_flagged": 0
+  },
+  {
+    "id": 2,
+    "message": "This class in bldg 110 is so boring...anyone wanna chat? #bldg110",
+    "image_url": null,
+    "latitude": 37.428004,
+    "longitude": -122.170635,
+    "radius": 25,
+    "direction_x": 0,
+    "direction_y": 0,
+    "direction_z": 0,
+    "num_likes": 0,
+    "date_created": "2013-04-10T05:25:57.000Z",
+    "user_id": 2,
+    "num_flagged": 0
+  },
+  {
+    "id": 1,
+    "message": "I'm alive! survived that midterm!",
+    "image_url": null,
+    "latitude": 37.427791,
+    "longitude": -122.169675,
+    "radius": 25,
+    "direction_x": 0,
+    "direction_y": 0,
+    "direction_z": 0,
+    "num_likes": 0,
+    "date_created": "2013-04-10T05:25:57.000Z",
+    "user_id": 2,
+    "num_flagged": 0
+  }]
+
+
+
+        };
         
     
         for (var i = 0; i < posts.posts.length; i++){
@@ -280,7 +466,7 @@ app.get('/home', function(req, res) {
             
         }
         res.render('index',posts); 
-     });
+     // });
   
 });
 

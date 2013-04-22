@@ -34,8 +34,9 @@ UNIQUE (email)
 CREATE TABLE `likes` (
 `post_id` INT(11) DEFAULT 0,
 `user_id` INT(11) DEFAULT 0,
+`like` BOOLEAN DEFAULT TRUE,
 
-PRIMARY KEY (post_id, user_id)x`
+PRIMARY KEY (post_id, user_id)
 );
 
 INSERT INTO `users` (full_name, username, email) values('Justin Chen', 'justinkchen', 'justinkchen@stanford.edu');

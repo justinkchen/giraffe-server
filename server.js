@@ -123,7 +123,7 @@ app.get('/nearby', function(req, res) {
 
 app.post('/addgraffiti', function(req, res) {
     if(req.body.message){
-        connection.query('INSERT INTO posts (message, latitude, longitude, radius, user_id) values (?,?,?,?,?);',[req.body.message, req.body.latitude, req.body.longitude, req.body.radius, req.body.userid], function(err, results) {
+        connection.query('INSERT INTO posts (message, latitude, longitude, radius, user_id) VALUES (?,?,?,?,?);',[req.body.message, req.body.latitude, req.body.longitude, req.body.radius, req.body.userid], function(err, results) {
             res.send(results);
         });
     }else{
@@ -133,7 +133,7 @@ app.post('/addgraffiti', function(req, res) {
 
 app.post('/demoresponse', function(req, res) {
     if(req.body.message){
-        connection.query('INSERT INTO posts (message, latitude, longitude, radius, user_id) values (?,?,?,?,?);',[req.body.message, req.body.latitude, req.body.longitude, req.body.radius, req.body.userid], function(err, results) {
+        connection.query('INSERT INTO posts (message, latitude, longitude, radius, user_id) VALUES (?,?,?,?,?);',[req.body.message, req.body.latitude, req.body.longitude, req.body.radius, req.body.userid], function(err, results) {
             res.redirect("/demolist.html");
         });
     }
@@ -321,6 +321,33 @@ app.post('/user/logout', function(req, res) {
     res.send({logout: "Successfully logged out."});
 });
 
+app.post('/post/like', function(req, res) {
+    if (req.user && req.user.id) {
+	if (!_.isEmpty(req.body)) {
+	    connection.query('INSERT INTO likes (post_id, user_id, `like`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `like`=?;', [req.body.post_id, req.user.id, req.body.like, req.body.like], function(err, results) {
+		if (err) {
+		    return res.send({error: "Error liking, please try again."});
+		}
+		
+		// TODO: figure out what to send
+		res.send(results);
+	    });
+	} else {
+	    res.send("No POST data read.");
+	}
+    } else {
+	res.send({error: "Please log in to like."});
+    }
+});
+
+app.post('/post/flag', function(req, res) {
+    if (req.user && req.user.id) {
+	
+    } else {
+	// anonymous flag??
+    }
+});
+
 console.log('Listening to HTTP on port ' + HTTP_PORT_NO);
 server.listen(HTTP_PORT_NO);
 console.log('Listening to HTTPS on port ' + HTTPS_PORT_NO);
@@ -329,9 +356,7 @@ https.createServer(options, app).listen(HTTPS_PORT_NO)
 app.get('/home', function(req, res) {
      connection.query('SELECT * FROM posts;', function(err, results) {
         res.send(results.reverse());
-        test post for local machine
-        var posts = {'posts' : results.reverse()}
-       
+        var posts = {'posts' : results.reverse()};
         
     
         for (var i = 0; i < posts.posts.length; i++){
@@ -340,7 +365,7 @@ app.get('/home', function(req, res) {
             
         }
         res.render('index',posts); 
-     // });
+     });
   
 });
 

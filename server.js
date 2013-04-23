@@ -94,12 +94,14 @@ io.sockets.on('connection', function (socket) {
 
 });
 
+/*
 app.get('/', function(req, res) {
 
   connection.query('SELECT * FROM posts;', function(err, results) {
     res.send(results.reverse());
   });
 });
+*/
 
 var range = 0.5; // 500m
 // 111693.9173 - 110574.2727 (meters) latitude deg to meters
@@ -131,6 +133,7 @@ app.post('/addgraffiti', function(req, res) {
     }
 });
 
+/*
 app.post('/demoresponse', function(req, res) {
     if(req.body.message){
         connection.query('INSERT INTO posts (message, latitude, longitude, radius, user_id) VALUES (?,?,?,?,?);',[req.body.message, req.body.latitude, req.body.longitude, req.body.radius, req.body.userid], function(err, results) {
@@ -138,6 +141,7 @@ app.post('/demoresponse', function(req, res) {
         });
     }
 });
+*/
 
 app.post('/user/login', function(req, res, next) {
     console.log("login");
@@ -315,6 +319,23 @@ app.post('/user/avatar', function(req, res) {
 });
 */
 
+app.get('/user/stats', function(req, res) {
+    if (req.user && req.user.id) {
+	connection.query('SELECT * FROM (SELECT COUNT(*) AS posts FROM posts WHERE user_id=?) as p, (SELECT COUNT(*) AS likes FROM likes WHERE user_id=1) as l', [req.user.id, req.user.id], function(err, results) {
+	    if (err) {
+		return res.send({error: "Error retreiving stats, please try again."});
+	    }
+
+	    res.send({stats: results[0]});
+	});
+    } else {
+	// Just for testing
+	connection.query('SELECT * FROM (SELECT COUNT(*) AS posts FROM posts WHERE user_id=?) as p, (SELECT COUNT(*) AS likes FROM likes WHERE user_id=1) as l', [1,1], function(err, results) {
+	    res.send({stats: results[0]});
+	});
+    }
+});
+
 app.post('/user/logout', function(req, res) {
     console.log("logout");
     req.logout();
@@ -355,7 +376,6 @@ https.createServer(options, app).listen(HTTPS_PORT_NO)
 
 app.get('/home', function(req, res) {
      connection.query('SELECT * FROM posts;', function(err, results) {
-        res.send(results.reverse());
         var posts = {'posts' : results.reverse()};
         
     

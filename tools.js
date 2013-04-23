@@ -4,6 +4,10 @@ var radius = 6371.0;
  * Returns distance in terms of km */
 exports.distance = function(lat1, lon1, lat2, lon2) {
     
+	if (lat1 == lat2 && lon1 == lon2){
+		return 0.0;
+	}
+
     var latd = deg2rad(lat2 - lat1);
     var lond = deg2rad(lon2 - lon1);
     

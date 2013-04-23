@@ -108,10 +108,10 @@ var range = 0.5; // 500m
 // 0 - 111319.458 (meters) longitude deg to meters
 app.get('/nearby', function(req, res) {
     if (req.query && req.query.latitude && req.query.longitude) {
-	connection.query('SELECT * FROM (SELECT * FROM posts) AS p, (SELECT id, username FROM users) AS u WHERE p.user_id = u.id AND latitude >= ? AND latitude <= ? AND longitude >= ? AND longitude <= ?;', [req.query.latitude - 0.01, req.query.latitude + 0.01, req.query.longitude - 1, req.query.longitude + 1], function(err, results) {
+	connection.query('SELECT * FROM (SELECT * FROM posts) AS p, (SELECT id, username FROM users) AS u WHERE p.user_id = u.id AND latitude >= ? AND latitude <= ? AND longitude >= ? AND longitude <= ?;', [req.query.latitude - 0.1, req.query.latitude + 0.1, req.query.longitude - 1, req.query.longitude + 1], function(err, results) {
 	    nearby = [];
 	    for (var i in results) {
-	    	range = results[i].radius;
+	    	range = results[i].radius/1000.0;
 		if (tools.distance(req.query.latitude, req.query.longitude, results[i].latitude, results[i].longitude) <= range) {
 		    nearby.push(results[i]);
 		}
